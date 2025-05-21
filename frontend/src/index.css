@@ -9,6 +9,7 @@
   --bg-primary: #f4f4f6;
   --bg-secundary: #fff;
   --bg-third: #5E8377;
+  --bg-fourth: #2D435D;
 
   --font-white: #FFFFFF;
   --font-black: #16181A;
@@ -30,16 +31,11 @@
   -webkit-backface-visibility: hidden;
 }
 
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-#root {
+body, #root {
   width: 100%;
   min-height: 100vh;
+  
+  margin: 0;
+  display: flex;
+  flex-direction: column;
 }
