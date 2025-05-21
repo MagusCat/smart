@@ -1,0 +1,45 @@
+@import 'tailwindcss';
+
+@font-face {
+  font-family: aBlackLives;
+  src: url('/aBlackLives.otf');
+}
+
+:root {
+  --bg-primary: #f4f4f6;
+  --bg-secundary: #fff;
+  --bg-third: #5E8377;
+
+  --font-white: #FFFFFF;
+  --font-black: #16181A;
+  --font-blue: #13263E;
+  --font-accent: #2EC7B6;
+
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: var(--bg-primary);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-backface-visibility: hidden;
+}
+
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
