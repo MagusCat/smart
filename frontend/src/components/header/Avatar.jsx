@@ -1,10 +1,10 @@
 function Avatar({ src, name }) {
   return (
-      <div className="flex w-[3.5rem] h-[3.5rem] rounded-full overflow-hidden">
+      <div className="block min-w-[3em] min-h-[3em] size-[3em] rounded-full overflow-hidden">
         <img
           src={src}
           alt={name || "Avatar"}
-          className="aspect-square"
+          className="w-full h-full aspect-square"
         />
       </div>
   );
