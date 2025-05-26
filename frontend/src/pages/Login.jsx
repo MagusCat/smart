@@ -1,8 +1,4 @@
-// frontend/src/components/login/Login.jsx
-
-import React from 'react';
-
-export const Login = () => {
+function Login(){
   return (
     <main className="flex items-center justify-center min-h-screen bg-[#E3E5E4] font-sans">
       <section className="flex bg-white rounded-2xl overflow-hidden w-[1200px] max-w-[90vw] h-[700px] max-h-[700px] drop-shadow-[0_0px_20px_rgba(52,228,175,1)]">
@@ -61,3 +57,5 @@ export const Login = () => {
     </main>
   );
 };
+
+export default Login;

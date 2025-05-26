@@ -4,11 +4,11 @@ function Switcher({ options, selected, onSelect }) {
   const index = options.findIndex((opt) => opt.id == selected);
 
   return (
-    <div className="relative inline-flex border-2 border-(--font-blue) bg-white rounded-md overflow-hidden">
+    <div className="relative w-min h-min inline-flex border-1 border-(--font-blue) bg-white rounded-md overflow-hidden">
       <div
-        className="absolute top-0 bottom-0 h-full left-0 bg-(--font-blue) z-0 transition-transform duration-300"
+        className="absolute top-0 bottom-0 h-full -left-0.02 bg-(--font-blue) z-0 transition-transform duration-300"
         style={{
-          width: `calc(100% / ${options.length})`,
+          width: `calc((100% / ${options.length}) + 1px)`,
           transform: `translateX(calc(100% * ${index}))`,
         }}
       />
