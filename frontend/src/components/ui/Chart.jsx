@@ -28,24 +28,39 @@ ChartJS.register(
 
 export const ChartPalettes = [
   {
-    main: "rgb(114, 151, 98)",
-    color1: "rgba(114, 151, 98, 0.5",
-    color2: "rgba(120, 200, 160, 0.00)",
+    main: "rgb(34, 197, 94)",           // Verde pastel fuerte
+    color1: "rgba(34, 197, 94, 0.5)",   // Verde pastel degradado
+    color2: "rgba(34, 197, 94, 0.05)",  // Verde pastel claro
   },
   {
-    main: "rgb(101, 129, 71)",
-    color1: "rgba(101, 129, 71, 0.6)",
-    color2: "rgba(100, 220, 180, 0.00)",
+    main: "rgb(52, 211, 153)",          // Verde agua
+    color1: "rgba(52, 211, 153, 0.5)",
+    color2: "rgba(52, 211, 153, 0.05)",
   },
   {
-    main: "rgb(89, 116, 69)",
-    color1: "rgba(89, 116, 69, 0.6)",
-    color2: "rgba(160, 220, 180, 0.0)",
+    main: "rgb(16, 185, 129)",          // Verde esmeralda
+    color1: "rgba(16, 185, 129, 0.5)",
+    color2: "rgba(16, 185, 129, 0.05)",
   },
   {
-    main: "rgb(231, 240, 220)",
-    color1: "rgba(231, 240, 220, 0.6)",
-    color2: "rgba(231, 240, 220, 0.05)",
+    main: "rgb(132, 204, 22)",          // Verde lima
+    color1: "rgba(132, 204, 22, 0.5)",
+    color2: "rgba(132, 204, 22, 0.05)",
+  },
+  {
+    main: "rgb(59, 130, 246)",          // Azul pastel
+    color1: "rgba(59, 130, 246, 0.5)",
+    color2: "rgba(59, 130, 246, 0.05)",
+  },
+  {
+    main: "rgb(253, 224, 71)",          // Amarillo pastel
+    color1: "rgba(253, 224, 71, 0.5)",
+    color2: "rgba(253, 224, 71, 0.05)",
+  },
+  {
+    main: "rgb(244, 114, 182)",         // Rosa pastel
+    color1: "rgba(244, 114, 182, 0.5)",
+    color2: "rgba(244, 114, 182, 0.05)",
   },
 ];
 

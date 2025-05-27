@@ -100,7 +100,7 @@ function Compare() {
   };
 
   return (
-    <Card className="w-full h-150 mx-auto p-6 flex flex-col gap-6 rounded-xl shadow-xl border-red-100 bg-white text-black">
+    <Card className="w-full h-150 mx-auto p-6 flex flex-col gap-6 rounded-xl shadow-xl border-gray-400 border-2 bg-white text-black">
       <header className="flex flex-row gap-5 border-b-2 p-2">
         <button
           onClick={() => setType("graph")}
@@ -152,10 +152,11 @@ function Compare() {
       </Card>
 
       <div className="flex flex-row relative min-h-[220px]">
-        <section className="w-full">
-          {type == "table" ? (
-            <CrossTable dataSoruce={contingencyData} />
-          ) : (
+        <section className="relative w-full">
+        <div className={`absolute inset-0 transition-all duration-300 ${type == "table" ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"} w-full`}>
+          <CrossTable dataSoruce={contingencyData} />
+        </div>
+        <div className={`absolute inset-0 transition-all duration-300 ${type == "graph" ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"}`}>
             <Chart
               className="flex w-[90%] h-[220px]"
               type="line"
@@ -167,7 +168,8 @@ function Compare() {
               data={chartData}
               state="done"
             />
-          )}
+        </div>
+
         </section>
         <aside className="flex flex-col w-30 gap-4">
           <Button

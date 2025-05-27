@@ -1,10 +1,13 @@
+import { Routes, Route } from "react-router";
+
 import Footer from "./components/layout/Footer";
 import Header from "./components/layout/Header";
 import Layout from "./components/layout/Layout";
 import MainContent from "./components/layout/MainContent";
 import Dashboard from "./pages/Dashboard";
-import ChartSection from "./pages/Compare";
-import Login from "./pages/Login"
+import Compare from "./pages/Compare";
+import Query from "./pages/Query";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -13,11 +16,19 @@ function App() {
 
       <Layout>
         <Header />
-        <MainContent children={<ChartSection></ChartSection>}/>
+        <MainContent>
+          <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/compare" element={<Compare />} />
+          <Route path="/query" element={<Query />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+        </MainContent>
       </Layout>
       <Footer />
     </>
   );
 }
-
+//99 - 1999 / 01 -- 1901 / 2000 - 00 1900
+// 
 export default App;

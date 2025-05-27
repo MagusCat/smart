@@ -6,9 +6,9 @@ import { useState } from "react";
 
 function Dashboard() {
   const optionsTime = [
-    { label: "1M", id: "Mounth" },
-    { label: "1A", id: "Year" },
-    { label: "5A", id: "BeforeYear" },
+    { label: "1M", value: "Mounth" },
+    { label: "1A", value: "Year" },
+    { label: "5A", value: "BeforeYear" },
   ];
 
   const optionsChart = {
@@ -138,7 +138,7 @@ function Dashboard() {
   const [time, setTime] = useState(optionsTime[0].id);
   return (
     <>
-      <article className="flex flex-col items-center sm:flex-row justify-between w-full md:gap-2 lg:gap-10">
+      <article className="flex flex-col md:flex-row items-center justify-between w-full gap-3 lg:gap-10">
         <CardInfo
           title="Crecimiento Vehicular"
           items={[
@@ -161,7 +161,7 @@ function Dashboard() {
         />
       </article>
 
-      <Card className="flex flex-row bg-(--bg-secundary) mt-10 p-5 rounded-xl shadow-xl border border-gray-700 gap-5 h-70">
+      <Card className="flex flex-row bg-(--bg-secundary) mt-10 p-5 rounded-xl shadow-xl border-gray-400 border-2 gap-5 h-70">
         <section className="flex-2 h-full flex-col gap-5 justify-center">
           <div className="flex justify-end">
             <Switcher

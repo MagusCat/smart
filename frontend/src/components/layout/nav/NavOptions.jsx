@@ -12,7 +12,7 @@ function NavOptions({
       <NavItem
         className={classNav || ""}
         icon={icons && opt.icon}
-        href={opt.href}
+        to={opt.to}
       >
         {opt.name}
       </NavItem>

@@ -15,14 +15,17 @@ function Header() {
     {
       name: "Dashboard",
       icon: <FaBarsStaggered />,
+      to: "/"
     },
     {
       name: "Compración",
       icon: <FaTable />,
+      to: "/compare"
     },
     {
       name: "Consultas",
       icon: <FaDatabase />,
+      to: "/query"
     },
     {
       name: "Acerca de",
