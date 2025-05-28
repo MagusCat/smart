@@ -62,7 +62,7 @@ export function CardInfo({ title, items }) {
 export function CardChart({ title, children, className }) {
   return (
     <Card className={`flex flex-col ${className}`}>
-      {title && <CardHeader>{title}</CardHeader>}
+      {title && <CardHeader className="mb-4">{title}</CardHeader>}
       <CardContent>{children}</CardContent>
     </Card>
   );
@@ -78,7 +78,7 @@ export function CardDetails({children, className}){
 
 export function CardMain({children, className}){
   return (
-    <Card className={`flex flex-row bg-(--bg-secundary) mt-10 p-5 rounded-xl shadow-xl border-gray-400 border-2 gap-5 ${className}`}>
+    <Card className={`bg-(--bg-secundary) p-5 rounded-xl shadow-xl border-gray-400 text-black border-2 ${className}`}>
       {children}
     </Card>
   )

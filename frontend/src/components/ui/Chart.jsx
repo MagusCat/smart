@@ -11,6 +11,7 @@ import {
   ArcElement,
   Legend
 } from "chart.js";
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { Line, Pie, Bar } from "react-chartjs-2";
 
@@ -23,7 +24,8 @@ ChartJS.register(
   Filler,
   BarElement,
   ArcElement,
-  Legend
+  Legend,
+  ChartDataLabels
 );
 
 export const ChartPalettes = [

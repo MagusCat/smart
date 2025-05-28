@@ -6,7 +6,7 @@ function Selector({ options = [], value, onChange, className = "" }) {
   }
 
   return (
-    <div className={`flex flex-col w-full max-w-xs overflow-hidden ${className}`}>
+    <div className={`flex flex-col w-full overflow-hidden ${className}`}>
       <ul className="relative flex flex-col">
         <div
           className="absolute top-0 bottom-0 w-full bg-(--font-blue) rounded-lg z-0 transition-transform duration-300"

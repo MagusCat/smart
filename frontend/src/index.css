@@ -44,5 +44,5 @@ body, #root {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: overlay auto;
 }

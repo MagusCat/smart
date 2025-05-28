@@ -1,78 +1,54 @@
 import { useState } from "react";
-import DropDown from "../components/ui/DropDown";
-import Button from "../components/ui/Button";
-import { Card } from "../components/ui/Card";
 import { FaBolt, FaBookMedical } from "react-icons/fa6";
-import { Chart } from "../components/ui/Chart";
-import { CompactTable } from "@table-library/react-table-library/compact";
-import { useTheme } from "@table-library/react-table-library/theme";
-import { getTheme } from "../components/ui/Table";
+import { ViewSelector, Button, DropDown} from "@components/ui"
+import { CrossTable, CrossTableStyled } from "@components/ui/Table";
+import { Chart } from "@components/ui/Chart";
+import { Card, CardMain } from "@components/ui/Card";
+
 
 const variables = [
-  { label: "Ventas", value: "ventas" },
-  { label: "Usuarios", value: "usuarios" },
-  { label: "Ingresos", value: "ingresos" },
+  { label: "Categoria", value: "category" },
+  { label: "Uso", value: "use" }
+
 ];
 
 const tiempos = [
-  { label: "Enero", value: "ene" },
-  { label: "Febrero", value: "feb" },
-  { label: "Marzo", value: "mar" },
-  { label: "Abril", value: "abr" },
+  { label: "2024", value: "2024" },
 ];
 
 const contingencyData = [
-  { id: 0, var1: "Hombre", var2: "Sí", data: 12 },
-  { id: 1, var1: "Hombre", var2: "No", data: 8 },
-  { id: 2, var1: "Mujer", var2: "Sí", data: 15 },
-  { id: 3, var1: "Mujer", var2: "No", data: 5 },
+  { id: 0, var1: "Particular", var2: "Privado", data: 1 },
+  { id: 1, var1: "Particular", var2: "Publico", data: 2 },
+  { id: 2, var1: "Particular", var2: "Oficial", data: 5 },
+  { id: 3, var1: "Comercial", var2: "Privado", data: 2 },
+  { id: 4, var1: "Comercial", var2: "Publico", data: 4 },
+  { id: 5, var1: "Comercial", var2: "Oficial", data: 10 },
+  { id: 6, var1: "Carga", var2: "Privado", data: 3 },
+  { id: 7, var1: "Carga", var2: "Publico", data: 6 },
+  { id: 8, var1: "Carga", var2: "Oficial", data: 15 }
 ];
 
-function pivotData(data, rowKey, colKey, valueKey) {
-  const result = {};
-  let index = 0;
 
-  data.forEach((item) => {
-    const row = item[rowKey];
-    const col = item[colKey];
-    const value = item[valueKey];
-
-    if (!result[row]) {
-      result[row] = { [rowKey]: row, id: index++ };
-    }
-
-    result[row][col] = value;
-  });
-
-  return Object.values(result);
-}
-
-function getColumnsFromPivot(pivoted, ignore) {
-  if (pivoted.length == 0) return [];
-
-  const keys = new Set(Object.keys(pivoted[0]).filter((key) => !ignore[key]));
-
-  return Array.from(keys);
-}
-
-function CrossTable({ dataSoruce }) {
-  const data = pivotData(dataSoruce, "var1", "var2", "data");
-  const headers = getColumnsFromPivot(data, { var1: true, id: true });
-  const theme = useTheme(getTheme());
-
-  const cols = [
+const chartData = {
+  labels: ["Enero", "Febrero", "Marzo"],
+  datasets: [
     {
-      label: "Categoría",
-      renderCell: (item) => item.var1,
+      label: "Particular",    // var1 categoría 1
+      data: [1, 2, 5],        // valores para cada label de var2
+      backgroundColor: "rgba(100,200,250,0.6)"
     },
-    ...headers.map((header) => ({
-      label: header,
-      renderCell: (item) => item[header] ?? 0,
-    })),
-  ];
-
-  return <CompactTable className="min-w-full" columns={cols} data={{ nodes: data }} theme={theme} />;
-}
+    {
+      label: "Comercial",     // var1 categoría 2
+      data: [2, 4, 10],
+      backgroundColor: "rgba(255,180,100,0.6)"
+    },
+    {
+      label: "Carga",         // var1 categoría 3
+      data: [3, 6, 15],
+      backgroundColor: "rgba(150,100,255,0.6)"
+    }
+  ]
+};
 
 function Compare() {
   const [type, setType] = useState("table");
@@ -83,42 +59,16 @@ function Compare() {
     t2: "",
   });
 
-  // Datos de ejemplo para el gráfico
-  const chartData = {
-    labels: ["Enero", "Febrero", "Marzo", "Abril"],
-    datasets: [
-      {
-        label: "Ventas",
-        data: [10, 20, 30, 40],
-        borderColor: "rgb(100, 220, 180)",
-        backgroundColor: "rgba(100, 220, 180, 0.2)",
-        fill: true,
-        tension: 0.4,
-        pointRadius: 4,
-      },
-    ],
-  };
-
   return (
-    <Card className="w-full min_h-140 mx-auto p-6 flex flex-col gap-6 rounded-xl shadow-xl border-gray-400 border-2 bg-white text-black">
-      <header className="flex flex-row gap-5 border-b-2 p-2">
-        <button
-          onClick={() => setType("table")}
-          className={`px-2 transition-all duration-300 hover:shadow-[0_3px_0_black] hover:-translate-y-0.5 ${
-            type === "table" && "shadow-[0_2px_0_black]"
-          }`}
-        >
-          Tabla Contingencia
-        </button>
-        <button
-          onClick={() => setType("graph")}
-          className={`px-2 transition-all duration-300 hover:shadow-[0_3px_0_black] hover:-translate-y-0.5 ${
-            type === "graph" && "shadow-[0_2px_0_black]"
-          }`}
-        >
-          Gráfico
-        </button>
-      </header>
+    <CardMain className="flex flex-col w-full min-h-140 gap-3">
+      <ViewSelector
+        current={type}
+        onChange={setType}
+        options={[
+          { label: "Tabla de Contingencia", value: "table" },
+          { label: "Gráficos", value: "graph" },
+        ]}
+      />
 
       <Card className="flex flex-col md:flex-row justify-between lg:justify-normal items-center gap-3 p-3 border-1 border-gray-300 rounded-lg">
         <div className="flex flex-col md:flex-row flex-wrap w-full gap-3 justify-center">
@@ -164,7 +114,7 @@ function Compare() {
                 : "opacity-0 -translate-y-1 pointer-events-none min-w-0 h-0 overflow-hidden"
             } w-full`}
           >
-            <CrossTable dataSoruce={contingencyData} />
+            <CrossTableStyled dataSource={contingencyData} />
           </div>
           <div
             className={`block transition-all duration-300 ${
@@ -179,7 +129,7 @@ function Compare() {
               options={{
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: { legend: { display: false }, datalabels: {display:false} },
               }}
               data={chartData}
               state="done"
@@ -204,7 +154,7 @@ function Compare() {
           </Button>
         </aside>
       </div>
-    </Card>
+    </CardMain>
   );
 }
 

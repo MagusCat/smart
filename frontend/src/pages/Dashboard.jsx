@@ -1,11 +1,11 @@
 import img_terriry from "/img/territory.svg";
-import { CardInfo, CardMain, CardDetails } from "../components/ui/Card";
+import { CardInfo, CardMain, CardDetails } from "@components/ui/Card";
 import {
   Chart,
   ChartPalettes,
   getBackgroundGradient,
-} from "../components/ui/Chart";
-import Switcher from "../components/ui/Switcher";
+} from "@components/ui/Chart";
+import Switcher from "@components/ui/Switcher";
 import { useState } from "react";
 
 function Dashboard() {
@@ -25,9 +25,12 @@ function Dashboard() {
       legend: {
         display: false,
       },
+      datalabels: {
+        display: false,
+      },
     },
     scales: {
-      x: { grid: { display: true } },
+      x: { grid: { display: false } },
       y: { grid: { color: "#e5e7eb" } },
     },
   };
@@ -47,7 +50,6 @@ function Dashboard() {
     ],
     datasets: [
       {
-        label: "Crecimiento",
         data: [1, 100, 10, 50, 5, 123, 50, 80, 120, 60],
         borderColor: ChartPalettes[0].main,
         backgroundColor: (context) =>
@@ -60,69 +62,69 @@ function Dashboard() {
   };
 
   const barData1 = {
-    labels: ["A", "B", "C", "D", "E"],
+    labels: ["Pasajeros", "Carga", "Pesado"],
     datasets: [
       {
-        label: "Barra 1",
-        data: [12, 19, 3, 5, 2],
-        backgroundColor: "rgba(100, 220, 180, 0.7)",
-        borderColor: "rgb(100, 220, 180)",
-        borderWidth: 1,
+        data: [12, 19, 3],
+        backgroundColor: ChartPalettes[0].color1,
+        borderColor: ChartPalettes[0].main,
+        borderWidth: 2,
       },
     ],
   };
 
   const barData2 = {
-    labels: ["X", "Y", "Z", "W", "Q"],
+    labels: ["Autobus", "Automovil", "Camion", "Motocicleta", "Microbus"],
     datasets: [
       {
-        label: "Barra 2",
         data: [7, 11, 5, 8, 3],
-        backgroundColor: "rgba(120, 180, 220, 0.7)",
-        borderColor: "rgb(120, 180, 220)",
-        borderWidth: 1,
+        backgroundColor: ChartPalettes[1].color1,
+        borderColor: ChartPalettes[1].main,
+        borderWidth: 2,
       },
     ],
   };
 
   const pieData1 = {
-    labels: ["Rojo", "Verde", "Azul"],
+    labels: ["Particular", "Comercial", "Carga"],
     datasets: [
       {
-        label: "Pie 1",
         data: [10, 20, 30],
         backgroundColor: [
-          "rgba(255, 99, 132, 0.7)",
-          "rgba(75, 192, 192, 0.7)",
-          "rgba(54, 162, 235, 0.7)",
+          ChartPalettes[0].color1,
+          ChartPalettes[1].color1,
+          ChartPalettes[2].color1,
+          ChartPalettes[3].color1,
         ],
         borderColor: [
-          "rgb(255, 99, 132)",
-          "rgb(75, 192, 192)",
-          "rgb(54, 162, 235)",
+          ChartPalettes[0].main,
+          ChartPalettes[1].main,
+          ChartPalettes[2].main,
+          ChartPalettes[3].main,
         ],
-        borderWidth: 1,
+        borderWidth: 2,
       },
     ],
   };
 
   const pieData2 = {
-    labels: ["Amarillo", "Morado", "Naranja"],
+    labels: ["Privado", "Publico", "Oficial"],
     datasets: [
       {
-        label: "Pie 2",
         data: [15, 25, 60],
         backgroundColor: [
-          "rgba(255, 205, 86, 0.7)",
-          "rgba(153, 102, 255, 0.7)",
-          "rgba(255, 159, 64, 0.7)",
+          ChartPalettes[3].color1,
+          ChartPalettes[2].color1,
+          ChartPalettes[1].color1,
+          ChartPalettes[0].color1,
         ],
         borderColor: [
-          "rgb(255, 205, 86)",
-          "rgb(153, 102, 255)",
-          "rgb(255, 159, 64)",
+          ChartPalettes[3].main,
+          ChartPalettes[2].main,
+          ChartPalettes[1].main,
+          ChartPalettes[0].main,
         ],
-        borderWidth: 1,
+        borderWidth: 2,
       },
     ],
   };
@@ -130,7 +132,35 @@ function Dashboard() {
   const barOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
+    tooltips: {
+      enabled: false,
+    },
+    layout: {
+      padding: {
+        top: 10
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      datalabels: {
+        formatter: (value, ctx) => {
+          let sum = 0;
+          let dataArr = ctx.chart.data.datasets[0].data;
+          dataArr.map((data) => {
+            sum += data;
+          });
+          let percentage = ((value * 100) / sum).toFixed(2) + "%";
+          return percentage;
+        },
+        color: "#000",
+        anchor: "end",
+        align: "end",
+        offset: -5,
+        font: {
+          weight: "bold",
+        },
+      },
+    },
     scales: {
       x: { grid: { display: false } },
       y: { grid: { color: "#e5e7eb" } },
@@ -140,7 +170,29 @@ function Dashboard() {
   const pieOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { position: "bottom" } },
+    layout: {
+      padding: 15,
+    },
+    plugins: {
+      legend: { display: false },
+      datalabels: {
+        formatter: (value, ctx) => {
+          let sum = 0;
+          let dataArr = ctx.chart.data.datasets[0].data;
+          dataArr.map((data) => {
+            sum += data;
+          });
+          let percentage = ((value * 100) / sum).toFixed(2) + "%";
+          return percentage;
+        },
+        color: "#000",
+        anchor: "end",
+        align: "end",
+        font: {
+          weight: "bold",
+        },
+      },
+    },
   };
 
   const [time, setTime] = useState(optionsTime[0].value);
@@ -169,7 +221,7 @@ function Dashboard() {
         />
       </article>
 
-      <CardMain className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2 h-70">
+      <CardMain className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2 h-70 mt-10">
         <section className="gap-5 justify-center transition-none flex flex-col min-w-0">
           <div className="flex w-full justify-end">
             <Switcher

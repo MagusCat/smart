@@ -3,10 +3,16 @@ import NavAside from "./nav/NavAside.jsx";
 
 import Logo from "../ui/Logo.jsx";
 import Avatar from "../ui/Avatar.jsx";
-import { FaBarsStaggered, FaTable, FaDatabase, FaBolt, FaAngleLeft } from "react-icons/fa6";
+import {
+  FaBarsStaggered,
+  FaTable,
+  FaDatabase,
+  FaBolt,
+  FaAngleLeft,
+} from "react-icons/fa6";
 
 import { useState } from "react";
-import ButtonIcon  from "../ui/ButtonIcon.jsx";
+import ButtonIcon from "../ui/ButtonIcon.jsx";
 
 function Header() {
   const [open, setOpen] = useState(false);
@@ -15,22 +21,22 @@ function Header() {
     {
       name: "Dashboard",
       icon: <FaBarsStaggered />,
-      to: "/"
+      to: "/",
     },
     {
-      name: "Compración",
+      name: "Comparación",
       icon: <FaTable />,
-      to: "/compare"
+      to: "/compare",
     },
     {
       name: "Consultas",
       icon: <FaDatabase />,
-      to: "/query"
+      to: "/query",
     },
     {
       name: "Acerca de",
       icon: <FaBolt />,
-    }
+    },
   ];
 
   return (
@@ -51,7 +57,13 @@ function Header() {
           onClick={() => setOpen(!open)}
         />
         <NavAside navOptions={options} open={open} setOpen={setOpen} />
-        <Avatar src="https://avatars.githubusercontent.com/u/177873716?v=4" />
+        <Avatar
+          src="https://avatars.githubusercontent.com/u/177873716?v=4"
+          menu={[
+            { label: "Perfil", onClick: () => alert("Perfil") },
+            { label: "Cerrar sesión", onClick: () => alert("Logout") },
+          ]}
+        />
       </section>
     </header>
   );

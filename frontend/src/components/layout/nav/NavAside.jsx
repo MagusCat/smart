@@ -6,7 +6,7 @@ function NavAside({ navOptions = [], className, open, setOpen }) {
   return (
     <>
       <aside
-        className={`fixed top-0 left-0 w-2/5 max-w-xs h-full bg-white shadow-lg z-50 transition-transform duration-300 ${className || ''}
+        className={`fixed top-0 left-0 w-[50%] max-w-80 min-w-50 h-full bg-white shadow-lg z-50 transition-transform duration-300 ${className || ''}
         ${open ? "translate-x-0" : "-translate-x-full"}`}
       >
         <ButtonIcon
