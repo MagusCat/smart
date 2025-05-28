@@ -13,13 +13,13 @@ function Switcher({ options, selected, onSelect, className }) {
 
       {options.map((option) => (
         <button
-          key={option.id}
+          key={option.value}
           onClick={() => onSelect(option.value)}
-          className={`flex-[1_1_0] max-w-10 px-2 py-1 z-10 text-sm font-medium rounded-md transition-colors
+          className={`flex-[1_1_0] max-w-10 px-2 py-1 z-10 text-sm font-medium transition-colors 
           ${
             selected === option.value
               ? "text-(--font-white)"
-              : "text-(--font-black)"
+              : "text-(--font-black) hover:bg-gray-100"
           }
           `}
         >

@@ -4,5 +4,11 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@components": "/src/components",
+      "@pages": "/src/pages"
+    }
+  },
   plugins: [tailwindcss(), react()],
 })

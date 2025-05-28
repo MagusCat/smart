@@ -35,7 +35,7 @@ export function Card({ children, className }) {
 
 export function CardInfo({ title, items }) {
   return (
-    <Card className="rounded-2xl p-4 flex flex-col w-full md:w-2/3 md:max-w-70 h-45 bg-[var(--bg-fourth)] border-2 text-[var(--font-white)] shadow-xl transition-all duration-300 ease-out hover:border-[var(--font-accent)] hover:-translate-y-1">
+    <Card className="rounded-2xl p-4 flex flex-col w-full md:w-2/3 md:max-w-70 h-45 bg-[var(--bg-fourth)] border-2 border-gray-300 text-[var(--font-white)] shadow-xl transition-all duration-300 ease-out hover:border-[var(--font-accent)] hover:-translate-y-1">
       <CardHeader className="font-bold">{title}</CardHeader>
       <CardContent className="font-bold">
         <div className="flex justify-center text-center flex-row w-full gap-3">
@@ -62,8 +62,24 @@ export function CardInfo({ title, items }) {
 export function CardChart({ title, children, className }) {
   return (
     <Card className={`flex flex-col ${className}`}>
-      {title && <CardHeader>{title}</CardHeader>}
+      {title && <CardHeader className="mb-4">{title}</CardHeader>}
       <CardContent>{children}</CardContent>
     </Card>
   );
+}
+
+export function CardDetails({children, className}){
+  return (
+    <Card className={`bg-white shadow-2xl p-3 rounded-2xl border-2 border-gray-400 text-black ${className}`}>
+      {children}
+    </Card>
+  )
+}
+
+export function CardMain({children, className}){
+  return (
+    <Card className={`bg-(--bg-secundary) p-5 rounded-xl shadow-xl border-gray-400 text-black border-2 ${className}`}>
+      {children}
+    </Card>
+  )
 }
