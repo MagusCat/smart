@@ -100,16 +100,8 @@ function Compare() {
   };
 
   return (
-    <Card className="w-full h-150 mx-auto p-6 flex flex-col gap-6 rounded-xl shadow-xl border-gray-400 border-2 bg-white text-black">
+    <Card className="w-full min_h-140  mx-auto p-6 flex flex-col gap-6 rounded-xl shadow-xl border-gray-400 border-2 bg-white text-black">
       <header className="flex flex-row gap-5 border-b-2 p-2">
-        <button
-          onClick={() => setType("graph")}
-          className={`px-2 transition-all duration-300 hover:shadow-[0_3px_0_black] hover:-translate-y-0.5 ${
-            type === "graph" && "shadow-[0_2px_0_black]"
-          }`}
-        >
-          Gráfico
-        </button>
         <button
           onClick={() => setType("table")}
           className={`px-2 transition-all duration-300 hover:shadow-[0_3px_0_black] hover:-translate-y-0.5 ${
@@ -118,47 +110,71 @@ function Compare() {
         >
           Tabla Contingencia
         </button>
+        <button
+          onClick={() => setType("graph")}
+          className={`px-2 transition-all duration-300 hover:shadow-[0_3px_0_black] hover:-translate-y-0.5 ${
+            type === "graph" && "shadow-[0_2px_0_black]"
+          }`}
+        >
+          Gráfico
+        </button>
       </header>
 
-      <Card className="flex flex-wrap flex-row justify-between lg:justify-normal items-center gap-4 p-2 border-1 border-gray-300 rounded-lg">
-        <DropDown
-          options={variables}
-          value={form.v1}
-          onChange={(value) => setForm({ ...form, v1: value })}
-          placeholder="Variable 1"
-          className="w-35"
-        />
-        <DropDown
-          options={tiempos}
-          value={form.t1}
-          onChange={(value) => setForm({ ...form, t1: value })}
-          placeholder="Tiempo 1"
-          className="w-30"
-        />
-        <DropDown
-          options={variables}
-          value={form.v2}
-          onChange={(value) => setForm({ ...form, v2: value })}
-          placeholder="Variable 2"
-          className="w-35"
-        />
-        <DropDown
-          options={tiempos}
-          value={form.t2}
-          onChange={(value) => setForm({ ...form, t2: value })}
-          placeholder="Tiempo 2"
-          className="w-30"
-        />
+      <Card className="flex flex-wrap flex-row justify-between lg:justify-normal items-center gap-3 p-3 border-1 border-gray-300 rounded-lg">
+        <div className="flex flex-row flex-wrap w-full md:w-auto gap-3">
+          <DropDown
+            options={variables}
+            value={form.v1}
+            onChange={(value) => setForm({ ...form, v1: value })}
+            placeholder="Variable 1"
+            className="flex-1 md:w-35"
+          />
+          <DropDown
+            options={tiempos}
+            value={form.t1}
+            onChange={(value) => setForm({ ...form, t1: value })}
+            placeholder="Tiempo 1"
+            className="w-full xs:flex-1 md:w-30"
+          />
+        </div>
+        <div className="flex flex-row flex-wrap w-full md:w-auto gap-3">
+          <DropDown
+            options={variables}
+            value={form.v2}
+            onChange={(value) => setForm({ ...form, v2: value })}
+            placeholder="Variable 2"
+            className="flex-1 md:w-35"
+          />
+          <DropDown
+            options={tiempos}
+            value={form.t2}
+            onChange={(value) => setForm({ ...form, t2: value })}
+            placeholder="Tiempo 2"
+            className="w-full xs:flex-1 md:w-30"
+          />
+        </div>
       </Card>
 
-      <div className="flex flex-row relative min-h-[220px]">
-        <section className="relative w-full">
-        <div className={`absolute inset-0 transition-all duration-300 ${type == "table" ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"} w-full`}>
-          <CrossTable dataSoruce={contingencyData} />
-        </div>
-        <div className={`absolute inset-0 transition-all duration-300 ${type == "graph" ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"}`}>
+      <div className="flex flex-col md:flex-row relative min-h-[220px]">
+        <section className="flex flex-grow relative w-full order-2 md:order-1 min-w-0">
+          <div
+            className={`absolute inset-0 transition-all duration-300 ${
+              type == "table"
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 -translate-y-1"
+            } w-full`}
+          >
+            <CrossTable dataSoruce={contingencyData} />
+          </div>
+          <div
+            className={`relative inset-0 transition-all duration-300 ${
+              type == "graph"
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 -translate-y-1"
+            } w-full`}
+          >
             <Chart
-              className="flex w-[90%] h-[220px]"
+              className="w-full h-[220px] min-w-0"
               type="line"
               options={{
                 responsive: true,
@@ -168,10 +184,10 @@ function Compare() {
               data={chartData}
               state="done"
             />
-        </div>
-
+          </div>
         </section>
-        <aside className="flex flex-col w-30 gap-4">
+
+        <aside className="flex flex-col w-full px-10 md:w-70 gap-4 order-1 md:order-2 mb-5 md:mb-0">
           <Button
             style="primary"
             className="w-full items-center justify-center"

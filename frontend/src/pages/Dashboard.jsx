@@ -1,6 +1,10 @@
 import img_terriry from "/img/territory.svg";
-import { CardInfo, Card } from "../components/ui/Card";
-import { Chart, ChartPalettes, getBackgroundGradient } from "../components/ui/Chart";
+import { CardInfo, CardMain, CardDetails } from "../components/ui/Card";
+import {
+  Chart,
+  ChartPalettes,
+  getBackgroundGradient,
+} from "../components/ui/Chart";
 import Switcher from "../components/ui/Switcher";
 import { useState } from "react";
 
@@ -46,7 +50,8 @@ function Dashboard() {
         label: "Crecimiento",
         data: [1, 100, 10, 50, 5, 123, 50, 80, 120, 60],
         borderColor: ChartPalettes[0].main,
-        backgroundColor: (context) => getBackgroundGradient(context, ChartPalettes[0]),
+        backgroundColor: (context) =>
+          getBackgroundGradient(context, ChartPalettes[0]),
         fill: true,
         tension: 0.4,
         pointRadius: 3,
@@ -126,7 +131,10 @@ function Dashboard() {
     responsive: true,
     maintainAspectRatio: false,
     plugins: { legend: { display: false } },
-    scales: { x: { grid: { display: false } }, y: { grid: { color: "#e5e7eb" } } },
+    scales: {
+      x: { grid: { display: false } },
+      y: { grid: { color: "#e5e7eb" } },
+    },
   };
 
   const pieOptions = {
@@ -135,7 +143,7 @@ function Dashboard() {
     plugins: { legend: { position: "bottom" } },
   };
 
-  const [time, setTime] = useState(optionsTime[0].id);
+  const [time, setTime] = useState(optionsTime[0].value);
   return (
     <>
       <article className="flex flex-col md:flex-row items-center justify-between w-full gap-3 lg:gap-10">
@@ -161,70 +169,73 @@ function Dashboard() {
         />
       </article>
 
-      <Card className="flex flex-row bg-(--bg-secundary) mt-10 p-5 rounded-xl shadow-xl border-gray-400 border-2 gap-5 h-70">
-        <section className="flex-2 h-full flex-col gap-5 justify-center">
-          <div className="flex justify-end">
+      <CardMain className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2 h-70">
+        <section className="gap-5 justify-center transition-none flex flex-col min-w-0">
+          <div className="flex w-full justify-end">
             <Switcher
               options={optionsTime}
               selected={time}
               onSelect={setTime}
             />
           </div>
-
-          <Chart
-            className="w-[99%] h-45 mt-5 transition-none"
-            type="line"
-            options={optionsChart}
-            data={mainData}
-            state="done"
-          />
+          <div className="flex-1 flex min-w-0">
+            <Chart
+              type="line"
+              className="w-full h-47 min-w-0"
+              options={optionsChart}
+              data={mainData}
+              state="done"
+            />
+          </div>
         </section>
 
-        <aside className="hidden sm:flex w-auto h-full max-w-[200px] lg:max-w-[260px] items-center justify-center">
+        <aside className="hidden sm:flex h-full min-w-[180px] max-w-[200px] lg:max-w-[260px] items-center justify-center">
           <img
             src={img_terriry}
             alt="Logo"
-            className="object-contain aspect-square w-full"
+            className="object-contain aspect-square w-full max-w-[200px] lg:max-w-[260px]"
           />
         </aside>
-      </Card>
+      </CardMain>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10">
+        <CardDetails>
           <Chart
             name="Categoria"
-            className="h-full w-full text-black bg-white shadow-2xl p-3 rounded-2xl border-1 border-black"
             type="bar"
             options={barOptions}
             data={barData1}
             state="done"
           />
-          
+        </CardDetails>
+
+        <CardDetails>
           <Chart
-            className="h-full w-full text-black bg-white shadow-2xl p-3 rounded-2xl border-1 border-black"
             type="bar"
             name="Tipo"
             options={barOptions}
             data={barData2}
             state="done"
           />
-
+        </CardDetails>
+        <CardDetails>
           <Chart
-            className="h-full w-full text-black bg-white shadow-2xl p-3 rounded-2xl border-1 border-black"
             type="pie"
             name="Uso"
             options={pieOptions}
             data={pieData1}
             state="done"
           />
-
+        </CardDetails>
+        <CardDetails>
           <Chart
-            className="h-full w-full text-black bg-white shadow-2xl p-3 rounded-2xl border-1 border-black"
             type="pie"
             name="Servicio"
             options={pieOptions}
             data={pieData2}
             state="done"
           />
+        </CardDetails>
       </div>
     </>
   );
