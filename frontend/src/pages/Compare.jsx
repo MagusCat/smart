@@ -71,7 +71,7 @@ function CrossTable({ dataSoruce }) {
     })),
   ];
 
-  return <CompactTable columns={cols} data={{ nodes: data }} theme={theme} />;
+  return <CompactTable className="min-w-full" columns={cols} data={{ nodes: data }} theme={theme} />;
 }
 
 function Compare() {
@@ -100,7 +100,7 @@ function Compare() {
   };
 
   return (
-    <Card className="w-full min_h-140  mx-auto p-6 flex flex-col gap-6 rounded-xl shadow-xl border-gray-400 border-2 bg-white text-black">
+    <Card className="w-full min_h-140 mx-auto p-6 flex flex-col gap-6 rounded-xl shadow-xl border-gray-400 border-2 bg-white text-black">
       <header className="flex flex-row gap-5 border-b-2 p-2">
         <button
           onClick={() => setType("table")}
@@ -120,57 +120,57 @@ function Compare() {
         </button>
       </header>
 
-      <Card className="flex flex-wrap flex-row justify-between lg:justify-normal items-center gap-3 p-3 border-1 border-gray-300 rounded-lg">
-        <div className="flex flex-row flex-wrap w-full md:w-auto gap-3">
+      <Card className="flex flex-col md:flex-row justify-between lg:justify-normal items-center gap-3 p-3 border-1 border-gray-300 rounded-lg">
+        <div className="flex flex-col md:flex-row flex-wrap w-full gap-3 justify-center">
           <DropDown
             options={variables}
             value={form.v1}
             onChange={(value) => setForm({ ...form, v1: value })}
             placeholder="Variable 1"
-            className="flex-1 md:w-35"
+            className="min-w-0 flex-1"
           />
           <DropDown
             options={tiempos}
             value={form.t1}
             onChange={(value) => setForm({ ...form, t1: value })}
             placeholder="Tiempo 1"
-            className="w-full xs:flex-1 md:w-30"
+            className="min-w-0 flex-1"
           />
         </div>
-        <div className="flex flex-row flex-wrap w-full md:w-auto gap-3">
+        <div className="flex flex-col md:flex-row flex-wrap w-full gap-3 justify-center">
           <DropDown
             options={variables}
             value={form.v2}
             onChange={(value) => setForm({ ...form, v2: value })}
             placeholder="Variable 2"
-            className="flex-1 md:w-35"
+            className="min-w-0 flex-1"
           />
           <DropDown
             options={tiempos}
             value={form.t2}
             onChange={(value) => setForm({ ...form, t2: value })}
             placeholder="Tiempo 2"
-            className="w-full xs:flex-1 md:w-30"
+            className="min-w-0 flex-1"
           />
         </div>
       </Card>
 
       <div className="flex flex-col md:flex-row relative min-h-[220px]">
-        <section className="flex flex-grow relative w-full order-2 md:order-1 min-w-0">
+        <section className="flex-grow relative w-full min-h-35 overflow-x-auto order-2 md:order-1 min-w-0">
           <div
-            className={`absolute inset-0 transition-all duration-300 ${
+            className={`block transition-all duration-300 ${
               type == "table"
                 ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-1"
+                : "opacity-0 -translate-y-1 pointer-events-none min-w-0 h-0 overflow-hidden"
             } w-full`}
           >
             <CrossTable dataSoruce={contingencyData} />
           </div>
           <div
-            className={`relative inset-0 transition-all duration-300 ${
+            className={`block transition-all duration-300 ${
               type == "graph"
                 ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-1"
+                : "opacity-0 -translate-y-1 pointer-events-none h-0 overflow-hidden"
             } w-full`}
           >
             <Chart

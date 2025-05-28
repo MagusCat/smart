@@ -20,23 +20,35 @@ function DropDown({
   }, []);
 
   return (
-    <div ref={ref} className={`text-black relative max-w-xs ${className}`}>
+    <div
+      ref={ref}
+      className={`text-black relative w-full min-w-0 ${className}`}
+      style={{ maxWidth: "100%" }}
+    >
       <button
         type="button"
-        className={`flex items-center justify-between w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow transition-all duration-200
+        className={`flex items-center justify-between w-full min-w-0 px-4 py-2 bg-white border border-gray-300 rounded-lg shadow transition-all duration-200
           hover:border-blue-400 focus:border-blue-500 outline-none`}
         onClick={() => setOpen((v) => !v)}
+        style={{ minWidth: 0 }}
       >
-        <span className={`text-sm ${!value ? "text-gray-400" : ""}`}>
+        <span
+          className={`text-sm truncate ${!value ? "text-gray-400" : ""}`}
+          style={{
+            minWidth: 0,
+            flex: 1,
+            textAlign: "left",
+          }}
+        >
           {options.find((opt) => opt.value === value)?.label || placeholder}
         </span>
         <FaChevronDown
-          className={`ml-2 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`ml-2 transition-transform flex-shrink-0 ${open ? "rotate-180" : ""}`}
         />
       </button>
 
       {open && (
-        <ul className="absolute w-min top-10/12 left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 animate-fade-in flex flex-col">
+        <ul className="absolute left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 animate-fade-in flex flex-col w-full min-w-0 max-w-full">
           {options.map((opt) => (
             <li
               key={opt.value}
