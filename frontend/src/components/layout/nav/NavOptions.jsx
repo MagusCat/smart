@@ -6,6 +6,7 @@ function NavOptions({
   classNav,
   icons,
   navOptions = [],
+  onNavItemClick
 }) {
   const options = navOptions.map((opt) => (
     <li className={classItem || ""} key={opt.name}>
@@ -13,6 +14,7 @@ function NavOptions({
         className={classNav || ""}
         icon={icons && opt.icon}
         to={opt.to}
+        onClick={onNavItemClick}
       >
         {opt.name}
       </NavItem>

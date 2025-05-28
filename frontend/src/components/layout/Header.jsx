@@ -30,11 +30,12 @@ function Header() {
     {
       name: "Acerca de",
       icon: <FaBolt />,
+      to: "/about-us"
     }
   ];
 
   return (
-    <header className="flex items-center justify-between py-2 pb-10 w-auto h-auto">
+    <header className="flex items-center justify-between py-2 pb-10 w-auto h-auto z-50">
       <Logo vertical={false} size="10" />
 
       <section className="flex gap-5 lg:gap-10">
