@@ -1,12 +1,15 @@
-import { Link } from "react-router";
+import React from 'react';
+import { NavLink } from "react-router-dom";
 import { IconContext } from "react-icons/lib";
 
 function NavItem({ children, className, icon, to = "#", onClick }) {
   return (
-    <Link
-      className={`flex items-center justify-center flex-1 h-full px-4 py-1 gap-2 text-center ${
-        className || ""
-      }`}
+    <NavLink
+      className={({ isActive }) =>
+        `flex items-center justify-center flex-1 h-full px-4 py-1 gap-2 text-center ${className || ""} ${
+          isActive ? "text-[#34e4af] font-bold" : "text-gray-700 hover:text-gray-900"
+        }`
+      }
       to={to}
       onClick={onClick}
     >
@@ -16,7 +19,7 @@ function NavItem({ children, className, icon, to = "#", onClick }) {
         </IconContext.Provider>
       )}
       <span className="flex-1 text-center">{children}</span>
-    </Link>
+    </NavLink>
   );
 }
 

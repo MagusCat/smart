@@ -1,9 +1,9 @@
 import React from "react";
 
-export const AboutUs = () => {
+function AboutUs() {
   return (
-    <div className="min-h-screen  font-sans text-gray-800">
-      <div className="fixed top-0 left-0 w-full h-1/5 bg-(--bg-secundary) -z-10"></div>
+    <div className="min-h-screen font-sans text-gray-800">
+      <div className="fixed top-0 left-0 w-full h-1/5 bg-[var(--bg-secundary)] -z-10"></div>
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <section className="my-16 flex justify-center text-center md:text-left">
@@ -131,4 +131,7 @@ export const AboutUs = () => {
       </main>
     </div>
   );
-};
+}
+
+// **¡Esta es la línea que resuelve el error!**
+export default AboutUs;

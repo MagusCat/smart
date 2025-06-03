@@ -40,8 +40,10 @@ function Header() {
     }
   ];
 
-  return (
-    <header className="flex items-center justify-between py-2 pb-10 w-auto h-auto z-50">
+  // frontend/src/components/layout/Header.jsx
+// ...
+return (
+  <header className="flex items-center justify-between py-2 pb-10 w-auto h-auto z-50 mt-4"> 
       <Logo vertical={false} size="10" />
 
       <section className="flex gap-5 lg:gap-10">
@@ -62,6 +64,7 @@ function Header() {
           src="https://avatars.githubusercontent.com/u/177873716?v=4"
           menu={[
             { label: "Perfil", onClick: () => alert("Perfil") },
+            { label: "Datos", to: "/admin/propietarios" },
             { label: "Cerrar sesión", onClick: () => alert("Logout") },
           ]}
         />
