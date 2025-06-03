@@ -1,129 +1,5 @@
 import React from "react";
-import { CompactTable } from "@table-library/react-table-library/compact";
-import { useTheme } from "@table-library/react-table-library/theme";
 import { FaRegCalendarAlt, FaChartLine } from "react-icons/fa";
-
-export function getTheme() {
-  return {
-    Table: `
-      border: 2px solid #00000080;
-      margin: 0rem 2rem;
-    `,
-    HeaderRow: `
-        .th {
-          border-bottom: 2px solid #000;
-          padding: 0.25rem;
-        }
-      `,
-    BaseCell: `
-        &:not(:last-of-type) {
-          border-right: 1px solid #a0a8ae;
-        }
-
-        text-align: center;
-        padding: 0.2rem;
-      `,
-  };
-}
-
-function pivotCrossData(data, rowKey, colKey, valueKey) {
-  const result = {};
-  let index = 0;
-
-  data.forEach((item) => {
-    const row = item[rowKey];
-    const col = item[colKey];
-    const value = item[valueKey];
-
-    if (!result[row]) {
-      result[row] = { [rowKey]: row, id: index++ };
-    }
-
-    result[row][col] = value;
-  });
-
-  return Object.values(result);
-}
-
-function getColumnsFromCrossPivot(pivoted, ignore) {
-  if (pivoted.length == 0) return [];
-
-  const keys = new Set(Object.keys(pivoted[0]).filter((key) => !ignore[key]));
-
-  return Array.from(keys);
-}
-
-export function CrossTable({ dataSource }) {
-  const data = pivotCrossData(dataSource, "var1", "var2", "data");
-  const headers = getColumnsFromCrossPivot(data, { var1: true, id: true });
-  const theme = useTheme(getTheme());
-
-  const cols = [
-    {
-      label: "Categoría",
-      renderCell: (item) => item.var1,
-    },
-    ...headers.map((header) => ({
-      label: header,
-      renderCell: (item) => item[header] ?? 0,
-    })),
-  ];
-
-  return (
-    <CompactTable
-      className="min-w-full"
-      columns={cols}
-      data={{ nodes: data }}
-      theme={theme}
-    />
-  );
-}
-
-function pivotFrecuencyTable(dataSource, total) {
-  return dataSource.map((current) => ({
-    var: current.var,
-    cat: current.cat,
-    f: current.total,
-    fi: current.total / total,
-    fx: (current.total / total) * 100,
-  }));
-}
-
-export function FrecuencyTable({ dataSource }) {
-  const total = dataSource.reduce((prev, current) => prev + current.total, 0);
-
-  const data = pivotFrecuencyTable(dataSource, total);
-
-  const cols = [
-    {
-      label: data[0].var,
-      renderCell: (item) => item.cat,
-    },
-    {
-      label: "Frecuencia (f)",
-      renderCell: (item) => item.f,
-    },
-    {
-      label: "Frecuencia Relativa (fi)",
-      renderCell: (item) => item.fi.toFixed(2),
-    },
-    {
-      label: "Frecuencia % (fx)",
-      renderCell: (item) => item.fx.toFixed(2) + "%",
-    },
-  ];
-
-  const theme = useTheme(getTheme());
-
-  return (
-    <CompactTable
-      className="min-w-full"
-      columns={cols}
-      data={{ nodes: data }}
-      theme={theme}
-    />
-  );
-}
 
 export function FrecuencyTableStyled({ dataSource }) {
   const total = dataSource.reduce((prev, current) => prev + current.total, 0);
@@ -171,7 +47,6 @@ export function FrecuencyTableStyled({ dataSource }) {
 }
 
 export function SystemRecordsTable({ title, data = [], onPeriodClick }) {
-  // Agrupa por variable
   const grouped = data.reduce((acc, curr) => {
     if (!acc[curr.variable]) acc[curr.variable] = [];
     acc[curr.variable].push(curr.period);
@@ -231,12 +106,37 @@ export function SystemRecordsTable({ title, data = [], onPeriodClick }) {
 }
 
 export function CrossTableStyled({ dataSource }) {
-  // Pivot
-  const data = pivotCrossData(dataSource, "var1", "var2", "data");
-  const headers = getColumnsFromCrossPivot(data, { var1: true, id: true });
+  if (!dataSource || dataSource.length === 0) {
+    return (
+      <div className="w-full max-w-2xl mx-auto border rounded-sm overflow-hidden bg-white">
+        <p className="text-center p-4 text-gray-500">
+          No hay datos disponibles
+        </p>
+      </div>
+    );
+  }
+
+  const data = dataSource || [];
+  const headers = Array.from(
+    new Set(Object.keys(data[0] || {}).filter((key) => key !== "rowField"))
+  );
+  const totalRows = dataSource.reduce((acc, item) => {
+    Object.keys(item).forEach((key) => {
+      if (key !== "rowField") {
+        acc[item.rowField] = (acc[item.rowField] || 0) + (item[key] || 0);
+      }
+    });
+
+    return acc;
+  }, {});
+
+  const totalCols = headers.reduce((acc, header) => {
+    acc[header] = data.reduce((sum, item) => sum + (item[header] || 0), 0);
+    return acc;
+  }, {});
 
   return (
-    <div className="w-full max-w-2xl mx-auto border rounded-sm overflow-hidden bg-white">
+    <div className="w-full max-w-2xl mx-auto border rounded-sm overflow-auto bg-white">
       <table className="min-w-full text-sm">
         <thead>
           <tr>
@@ -251,19 +151,37 @@ export function CrossTableStyled({ dataSource }) {
                 {header}
               </th>
             ))}
+            <th className="bg-gray-200 px-4 py-2 text-left font-bold border-b">
+              Total
+            </th>
           </tr>
         </thead>
         <tbody>
           {data.map((item, idx) => (
             <tr key={idx} className="hover:bg-blue-50 transition">
-              <td className="px-4 py-2 border-b">{item.var1}</td>
+              <td className="px-4 py-2 border-b">{item.rowField}</td>
               {headers.map((header) => (
                 <td key={header} className="px-4 py-2 border-b">
                   {item[header] ?? 0}
                 </td>
               ))}
+              <td className="px-4 py-2 border-b font-bold">
+                {totalRows[item.rowField] || 0}
+              </td>
             </tr>
           ))}
+
+          <tr>
+            <td className="px-4 py-2 font-bold border-t">Total</td>
+            {headers.map((header) => (
+              <td key={header} className="px-4 py-2 font-bold border-t">
+                {totalCols[header] || 0}
+              </td>
+            ))}
+            <td className="px-4 py-2 font-bold border-t">
+              {Object.values(totalRows).reduce((sum, val) => sum + val, 0)}
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

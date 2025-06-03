@@ -42,7 +42,7 @@ function Header() {
 
   return (
     <header className="flex items-center justify-between py-2 pb-10 w-auto h-auto z-50">
-      <Logo vertical={false} size="10" />
+      <Logo vertical={false} size="10" version='admin'/>
 
       <section className="flex gap-5 lg:gap-10">
         <NavBar navOptions={options} className="hidden md:flex" />

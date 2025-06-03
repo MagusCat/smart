@@ -7,7 +7,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@components": "/src/components",
-      "@pages": "/src/pages"
+      "@pages": "/src/pages",
+      "@hooks": "/src/hooks"
     }
   },
   plugins: [tailwindcss(), react()],
