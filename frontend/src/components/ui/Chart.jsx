@@ -12,8 +12,8 @@ import {
   Legend
 } from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-
 import { Line, Pie, Bar } from "react-chartjs-2";
+import { FaExplosion } from "react-icons/fa6";
 
 ChartJS.register(
   CategoryScale,
@@ -30,9 +30,9 @@ ChartJS.register(
 
 export const ChartPalettes = [
   {
-    main: "rgb(34, 197, 94)",           // Verde pastel fuerte
-    color1: "rgba(34, 197, 94, 0.5)",   // Verde pastel degradado
-    color2: "rgba(34, 197, 94, 0.05)",  // Verde pastel claro
+    main: "rgb(34, 197, 94)",          // Verde pastel fuerte
+    color1: "rgba(34, 197, 94, 0.5)",    // Verde pastel degradado
+    color2: "rgba(34, 197, 94, 0.05)",   // Verde pastel claro
   },
   {
     main: "rgb(52, 211, 153)",          // Verde agua
@@ -94,12 +94,35 @@ export function Chart({ type, name, data, options, state, className }) {
 
   return (
     <CardChart className={className} title={name}>
-      {state == "done" ? (
+      {state === "loading" ? (
+        <div className="flex justify-center items-center h-32">
+          <div className="flex space-x-2">
+            <span className="w-3 h-3 bg-(--font-accent) rounded-full animate-bounce" style={{ animationDelay: '0s' }}></span>
+            <span className="w-3 h-3 bg-(--font-accent) rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></span>
+            <span className="w-3 h-3 bg-(--font-accent) rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></span>
+          </div>
+          <style>
+            {`
+              @keyframes bounce {
+                0%, 80%, 100% { transform: translateY(0); }
+                40% { transform: translateY(-12px); }
+              }
+              .animate-bounce {
+                animation: bounce 1s infinite;
+              }
+            `}
+          </style>
+        </div>
+      ) : state === "error" ? (
+        <div className="text-red-500 text-center h-32 flex flex-col items-center justify-center">
+          <FaExplosion size="2rem" /> Ah ocurrido un error al cargar el gráfico
+        </div>
+      ) : state === "done" && ChartComponent ? (
         <ChartComponent data={data} options={options} />
-      ) : state == "loading" ? (
-        <p className="text-black">nya</p>
       ) : (
-        <p className="text-black">aaaaaaaaaaaaa</p>
+        <div className="text-gray-500 text-center h-32 flex items-center justify-center">
+          Grafico no disponible
+        </div>
       )}
     </CardChart>
   );

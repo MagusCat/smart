@@ -1,6 +1,4 @@
-import React from "react";
-
-function AboutUs() {
+function AboutUs(){
   return (
     <div className="min-h-screen font-sans text-gray-800">
       <div className="fixed top-0 left-0 w-full h-1/5 bg-[var(--bg-secundary)] -z-10"></div>
@@ -133,5 +131,4 @@ function AboutUs() {
   );
 }
 
-// **¡Esta es la línea que resuelve el error!**
 export default AboutUs;

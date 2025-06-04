@@ -1,56 +1,361 @@
 import img_terriry from "/img/territory.svg";
-import { CardInfo, CardMain, CardDetails } from "@components/ui/Card";
+import { CardInfo, CardMain, CardDetails, CardContentLoader } from "@components/ui/Card";
 import {
   Chart,
   ChartPalettes,
   getBackgroundGradient,
 } from "@components/ui/Chart";
 import Switcher from "@components/ui/Switcher";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import useFetchOlap from "@hooks/useFetchOlap.jsx";
+import useFetch  from "@hooks/useFetch.jsx";
+
+const getValue = (raw, value) => (raw ? raw.map((e) => e[value]) : []);
+
+const labelsOptionsMain = {
+  Year:  ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+}	
+
+//Main Chart
+
+const optionsChart = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    title: {
+      display: false,
+    },
+    legend: {
+      display: false,
+    },
+    datalabels: {
+      display: false,
+    },
+  },
+  scales: {
+    x: { grid: { display: false } },
+    y: { grid: { color: "#e5e7eb" } },
+  },
+};
+
+const bodyOptionsMain = {
+  Mounth: {
+    top: 30,
+    columns: [
+      {
+        name: "dia",
+        alias: "label",
+      },
+      {
+        name: "mes",
+      },
+      {
+        name: "anio",
+      },
+    ],
+    order: {
+      by: ["anio", "mes", "dia"],
+      type: "ASC",
+    },
+  },
+  Year: {
+    top: 12,
+    columns: [
+      {
+        name: "mes",
+        alias: "label",
+      },
+      {
+        name: "anio",
+      },
+    ],
+    order: {
+      by: ["anio", "mes"],
+      type: "ASC",
+    },
+  },
+  BeforeYear: {
+    top: 5,
+    columns: [
+      {
+        name: "anio",
+        alias: "label",
+      },
+    ],
+    order: {
+      by: ["anio"],
+      type: "ASC",
+    },
+  },
+};
+
+const bodyBasicMain = {
+  table: "hecho_inscripcion",
+
+  dims: [
+    {
+      name: "dim_tiempo",
+      type: "inner",
+      identify: "id_dim_tiempo",
+    },
+  ],
+  aggregations: [
+    {
+      fields: [
+        {
+          name: "mes",
+          alias: "data",
+        },
+      ],
+      agg: "COUNT",
+    },
+  ],
+};
+
+const getBodyMain = (time) => {
+  const options = bodyOptionsMain[time] || bodyOptionsMain.Mounth;
+
+  return {
+    ...bodyBasicMain,
+    ...options,
+  };
+};
+
+const optionsTime = [
+  { label: "1M", value: "Mounth" },
+  { label: "1A", value: "Year" },
+  { label: "5A", value: "BeforeYear" },
+];
+
+//Others Graphs
+
+const barOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  tooltips: {
+    enabled: false,
+  },
+  layout: {
+    padding: {
+      top: 10,
+    },
+  },
+  plugins: {
+    legend: { display: false },
+    datalabels: {
+      formatter: (value, ctx) => {
+        let sum = 0;
+        let dataArr = ctx.chart.data.datasets[0].data;
+        dataArr.map((data) => {
+          sum += data;
+        });
+        let percentage = ((value * 100) / sum).toFixed(2) + "%";
+        return percentage;
+      },
+      color: "#000",
+      anchor: "end",
+      align: "end",
+      offset: -5,
+      font: {
+        weight: "bold",
+      },
+    },
+  },
+  scales: {
+    x: { grid: { display: false } },
+    y: { grid: { color: "#e5e7eb" } },
+  },
+};
+
+const pieOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  layout: {
+    padding: {
+      top: 20,
+      bottom: 20,
+      left: 10,
+      right: 10,
+    },
+  },
+  plugins: {
+    legend: { display: true, position: "chartArea" },
+    datalabels: {
+      formatter: (value, ctx) => {
+        let sum = 0;
+        let dataArr = ctx.chart.data.datasets[0].data;
+        dataArr.map((data) => {
+          sum += data;
+        });
+        let percentage = ((value * 100) / sum).toFixed(2) + "%";
+        return percentage;
+      },
+      color: "#000",
+      anchor: "end",
+      align: "end",
+      font: {
+        weight: "bold",
+      },
+    },
+  },
+};
+
+const bodyCategory = {
+  table: "hecho_inscripcion",
+  columns: [
+    {
+      name: "categoria",
+      alias: "label",
+    }
+  ],
+  dims: [
+    {
+      name: "dim_categoria",
+      type: "inner",
+      identify: "id_dim_categoria",
+    },
+  ],
+  aggregations: [
+    {
+      fields: [
+        {
+          name: "categoria",
+          alias: "data",
+        },
+      ],
+      agg: "COUNT",
+    },
+  ],
+  order: {
+    by: ["data"],
+    type: "DESC",
+  },
+  top: 5
+};
+
+const bodyType = {
+  table: "hecho_inscripcion",
+  columns: [
+    {
+      name: "vehiculo",
+      alias: "label",
+    }
+  ],
+  dims: [
+    {
+      name: "dim_tipo_vehiculo",
+      type: "inner",
+      identify: "id_dim_tipo_vehiculo",
+    },
+  ],
+  aggregations: [
+    {
+      fields: [
+        {
+          name: "vehiculo",
+          alias: "data",
+        },
+      ],
+      agg: "COUNT",
+    },
+  ],
+  order: {
+    by: ["data"],
+    type: "DESC",
+  },
+  top: 5
+};
+
+const bodyUse = {
+  table: "hecho_inscripcion",
+  columns: [
+    {
+      name: "uso",
+      alias: "label",
+    }
+  ],
+  dims: [
+    {
+      name: "dim_tipo_uso",
+      type: "inner",
+      identify: "id_dim_tipo_uso",
+    },
+  ],
+  aggregations: [
+    {
+      fields: [
+        {
+          name: "uso",
+          alias: "data",
+        },
+      ],
+      agg: "COUNT",
+    },
+  ],
+  order: {
+    by: ["data"],
+    type: "DESC",
+  },
+  top: 5
+};
+
+
+const bodyService = {
+  table: "hecho_inscripcion",
+  columns: [
+    {
+      name: "servicio",
+      alias: "label",
+    }
+  ],
+  dims: [
+    {
+      name: "dim_tipo_servicio",
+      type: "inner",
+      identify: "id_dim_tipo_servicio",
+    },
+  ],
+  aggregations: [
+    {
+      fields: [
+        {
+          name: "servicio",
+          alias: "data",
+        },
+      ],
+      agg: "COUNT",
+    },
+  ],
+  order: {
+    by: ["data"],
+    type: "DESC",
+  },
+  top: 5
+};
+
+
+function formatNumber(value) {
+  if (value === null || value === undefined || isNaN(value)) return "—";
+  return Number(value)
+    .toLocaleString("es-ES", { maximumFractionDigits: 2, minimumFractionDigits: 0 });
+}
 
 function Dashboard() {
-  const optionsTime = [
-    { label: "1M", value: "Mounth" },
-    { label: "1A", value: "Year" },
-    { label: "5A", value: "BeforeYear" },
-  ];
+  const [time, setTime] = useState("Mounth");
+  const bodyMain = useMemo(() => getBodyMain(time), [time]);
+  const { data: rawMain, state: stateMain } = useFetchOlap(bodyMain);
+  const { data: rawCat, state: stateCat } = useFetchOlap(bodyCategory);
+  const { data: rawSer, state: stateSer } = useFetchOlap(bodyService);
+  const { data: rawUses, state: stateUses } = useFetchOlap(bodyUse);
+  const { data: rawType, state: stateType } = useFetchOlap(bodyType);
 
-  const optionsChart = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      title: {
-        display: false,
-      },
-      legend: {
-        display: false,
-      },
-      datalabels: {
-        display: false,
-      },
-    },
-    scales: {
-      x: { grid: { display: false } },
-      y: { grid: { color: "#e5e7eb" } },
-    },
-  };
+  const {data: summaryRaw, state: summaryState} = useFetch("olap/summary");
 
   const mainData = {
-    labels: [
-      "Ene",
-      "Feb",
-      "Mar",
-      "Abr",
-      "May",
-      "Jun",
-      "Jul",
-      "Ago",
-      "Sep",
-      "Oct",
-    ],
+    labels: labelsOptionsMain[time] ? labelsOptionsMain[time] : getValue(rawMain, "label"),
     datasets: [
       {
-        data: [1, 100, 10, 50, 5, 123, 50, 80, 120, 60],
+        data: getValue(rawMain, "data"),
         borderColor: ChartPalettes[0].main,
         backgroundColor: (context) =>
           getBackgroundGradient(context, ChartPalettes[0]),
@@ -61,11 +366,11 @@ function Dashboard() {
     ],
   };
 
-  const barData1 = {
-    labels: ["Pasajeros", "Carga", "Pesado"],
+  const catData = {
+    labels: getValue(rawCat, "label"),
     datasets: [
       {
-        data: [12, 19, 3],
+        data: getValue(rawCat, "data"),
         backgroundColor: ChartPalettes[0].color1,
         borderColor: ChartPalettes[0].main,
         borderWidth: 2,
@@ -73,11 +378,11 @@ function Dashboard() {
     ],
   };
 
-  const barData2 = {
-    labels: ["Autobus", "Automovil", "Camion", "Motocicleta", "Microbus"],
+  const typeData = {
+    labels: getValue(rawType, "label"),
     datasets: [
       {
-        data: [7, 11, 5, 8, 3],
+        data: getValue(rawType, "data"),
         backgroundColor: ChartPalettes[1].color1,
         borderColor: ChartPalettes[1].main,
         borderWidth: 2,
@@ -85,11 +390,11 @@ function Dashboard() {
     ],
   };
 
-  const pieData1 = {
-    labels: ["Particular", "Comercial", "Carga"],
+  const useData = {
+    labels: getValue(rawUses, "label"),
     datasets: [
       {
-        data: [10, 20, 30],
+        data: getValue(rawUses, "data"),
         backgroundColor: [
           ChartPalettes[0].color1,
           ChartPalettes[1].color1,
@@ -107,11 +412,11 @@ function Dashboard() {
     ],
   };
 
-  const pieData2 = {
-    labels: ["Privado", "Publico", "Oficial"],
+  const serviceData = {
+    labels: getValue(rawSer, "label"),
     datasets: [
       {
-        data: [15, 25, 60],
+        data: getValue(rawSer, "data"),
         backgroundColor: [
           ChartPalettes[3].color1,
           ChartPalettes[2].color1,
@@ -129,95 +434,45 @@ function Dashboard() {
     ],
   };
 
-  const barOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    tooltips: {
-      enabled: false,
-    },
-    layout: {
-      padding: {
-        top: 10
-      }
-    },
-    plugins: {
-      legend: { display: false },
-      datalabels: {
-        formatter: (value, ctx) => {
-          let sum = 0;
-          let dataArr = ctx.chart.data.datasets[0].data;
-          dataArr.map((data) => {
-            sum += data;
-          });
-          let percentage = ((value * 100) / sum).toFixed(2) + "%";
-          return percentage;
-        },
-        color: "#000",
-        anchor: "end",
-        align: "end",
-        offset: -5,
-        font: {
-          weight: "bold",
-        },
-      },
-    },
-    scales: {
-      x: { grid: { display: false } },
-      y: { grid: { color: "#e5e7eb" } },
-    },
-  };
-
-  const pieOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    layout: {
-      padding: 15,
-    },
-    plugins: {
-      legend: { display: false },
-      datalabels: {
-        formatter: (value, ctx) => {
-          let sum = 0;
-          let dataArr = ctx.chart.data.datasets[0].data;
-          dataArr.map((data) => {
-            sum += data;
-          });
-          let percentage = ((value * 100) / sum).toFixed(2) + "%";
-          return percentage;
-        },
-        color: "#000",
-        anchor: "end",
-        align: "end",
-        font: {
-          weight: "bold",
-        },
-      },
-    },
-  };
-
-  const [time, setTime] = useState(optionsTime[0].value);
   return (
     <>
       <article className="flex flex-col md:flex-row items-center justify-between w-full gap-3 lg:gap-10">
         <CardInfo
           title="Crecimiento Vehicular"
-          items={[
-            { value: "36.6%", label: "anual" },
-            { value: "36.6%", label: "anual" },
-          ]}
+          items={
+            summaryState === "done"
+              ? [
+                  { value: formatNumber(summaryRaw?.grow_m?.[0]?.diff) + "%", label: "mensual" },
+                  { value: formatNumber(summaryRaw?.grow_q?.[0]?.diff) + "%", label: "trimestral" },
+                ]
+              : []
+          }
+          loader
+          state={summaryState}
         />
 
         <CardInfo
           title="Parqueo Vehicular"
-          items={[{ value: "10,000", label: "vehiculos" }]}
+          items={
+            summaryState === "done"
+              ? [{ value: formatNumber(summaryRaw?.total), label: "vehiculos" }]
+              : []
+          }
+          loader
+          state={summaryState}
         />
-
         <CardInfo
-          title="Variacion Vehicular"
-          items={[
-            { value: "3.5", label: "vehiculos" },
-            { value: "3.5", label: "vehiculos" },
-          ]}
+          title="Promedio Vehicular"
+          items={
+            summaryState === "done"
+              ? [
+                  { value: formatNumber(summaryRaw?.avg_m), label: "mensual" },
+                  { value: formatNumber(summaryRaw?.avg_q), label: "trimestral" },
+                ]
+              : []
+          }
+          loader
+          state={summaryState}
         />
       </article>
 
@@ -236,7 +491,7 @@ function Dashboard() {
               className="w-full h-47 min-w-0"
               options={optionsChart}
               data={mainData}
-              state="done"
+              state={stateMain}
             />
           </div>
         </section>
@@ -256,8 +511,8 @@ function Dashboard() {
             name="Categoria"
             type="bar"
             options={barOptions}
-            data={barData1}
-            state="done"
+            data={catData}
+            state={stateCat}
           />
         </CardDetails>
 
@@ -266,8 +521,8 @@ function Dashboard() {
             type="bar"
             name="Tipo"
             options={barOptions}
-            data={barData2}
-            state="done"
+            data={typeData}
+            state={stateType}
           />
         </CardDetails>
         <CardDetails>
@@ -275,8 +530,8 @@ function Dashboard() {
             type="pie"
             name="Uso"
             options={pieOptions}
-            data={pieData1}
-            state="done"
+            data={useData}
+            state={stateUses}
           />
         </CardDetails>
         <CardDetails>
@@ -284,8 +539,8 @@ function Dashboard() {
             type="pie"
             name="Servicio"
             options={pieOptions}
-            data={pieData2}
-            state="done"
+            data={serviceData}
+            state={stateSer}
           />
         </CardDetails>
       </div>
