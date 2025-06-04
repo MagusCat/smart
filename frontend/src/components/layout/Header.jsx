@@ -39,10 +39,7 @@ function Header() {
       to: "/about-us",
     },
   ];
-
-  return (
-    <header className="flex items-center justify-between pb-10 w-auto h-auto z-50 mt-4">
-      <Logo vertical={false} size="10" />
+  
   
   return (
     <header className="flex items-center justify-between py-2 pb-10 w-auto h-auto z-50">

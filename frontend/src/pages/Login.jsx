@@ -6,13 +6,12 @@ function Login({ onLoginSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     setErrorMessage("");
@@ -22,12 +21,10 @@ function Login({ onLoginSuccess }) {
       return;
     }
 
-    setIsLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500)); 
 
-    setTimeout(() => {
       if (email === "admin" && password === "smartdrive") {
-        setIsLoading(false);
-
         if (onLoginSuccess) {
           onLoginSuccess();
         }
@@ -35,9 +32,11 @@ function Login({ onLoginSuccess }) {
         setErrorMessage(
           "Usuario o contraseña incorrectos. Inténtalo de nuevo."
         );
-        setIsLoading(false);
       }
-    }, 1500);
+    } catch (error) {
+      setErrorMessage("Ocurrió un error al intentar iniciar sesión.");
+      console.error("Error de login:", error);
+    }
   };
 
   return (
@@ -127,23 +126,10 @@ function Login({ onLoginSuccess }) {
                   bg-[#13263D]
                   border-2 border-[#1e2a3c]
 
-                  /* Efecto Hover */
                   hover:brightness-110
-
-                  /* Estado de carga */
-                  ${
-                    isLoading
-                      ? "cursor-not-allowed bg-gray-500 border-gray-600 shadow-none translate-y-2 drop-shadow-none"
-                      : ""
-                  }
                 `}
-                disabled={isLoading}
               >
-                {isLoading ? (
-                  <div className="w-6 h-6 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  <span>Iniciar Sesión</span>
-                )}
+                <span>Iniciar Sesión</span>
               </button>
             </form>
           </div>

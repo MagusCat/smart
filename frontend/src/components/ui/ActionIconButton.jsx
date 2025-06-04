@@ -4,7 +4,7 @@ const ActionIconButton = ({ type, onClick }) => {
   let bgColorClass = "";
   let iconSrc = "";
   let altText = "";
-  let buttonSizeClass = "w-10 h-8";
+  let buttonSizeClass = "w-10 h-7.5";
 
   switch (type) {
     case "edit":
