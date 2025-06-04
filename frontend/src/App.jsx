@@ -1,11 +1,12 @@
-// import React, { useState, useEffect } from "react";
-// import { Routes, Route } from "react-router-dom";
+import React, { useState, useEffect, lazy, Suspense } from "react";
+import { Routes, Route } from "react-router";
 
-// import Footer from "./components/layout/Footer";
-// import Header from "./components/layout/Header";
-// import Layout from "./components/layout/Layout";
-// import MainContent from "./components/layout/MainContent";
+import Footer from "./components/layout/Footer";
+import Header from "./components/layout/Header";
+import Layout from "./components/layout/Layout";
+import MainContent from "./components/layout/MainContent";
 
+<<<<<<< HEAD
 // import LoadingScreen from "./components/ui/LoadingScreen";
 
 // import { AboutUs } from "./pages/AboutUs";
@@ -87,9 +88,19 @@ import PropietarioList from "./pages/Admin/CRUD/PropietarioList.jsx";
 import RegistroList from "./pages/Admin/CRUD/RegistroList.jsx";
 import ServicioList from "./pages/Admin/CRUD/ServicioList.jsx";
 import TipoVehiculoList from "./pages/Admin/CRUD/TipoVehiculoList.jsx";
+=======
+import LoadingScreen from "./components/layout/LoadingScreen";
+>>>>>>> 1f71e124c8d635ad1e4b6696ccd508bd30dd9b5e
 
+// Use React.lazy for route components
+const AboutUs = lazy(() => import("./pages/AboutUs"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Compare = lazy(() => import("./pages/Compare"));
+const Query = lazy(() => import("./pages/Query"));
+const Login = lazy(() => import("./pages/Login"));
 
 function App() {
+<<<<<<< HEAD
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -136,10 +147,13 @@ function App() {
     return <LoadingScreen />;
   }
 
+=======
+>>>>>>> 1f71e124c8d635ad1e4b6696ccd508bd30dd9b5e
   return (
     <>
-      <div className="fixed top-0 left-0 w-full h-1/5 bg-[var(--bg-secundary)] -z-10"></div>
+      <div className="fixed top-0 left-0 w-full h-1/5 bg-(--bg-secundary) -z-10"></div>
 
+<<<<<<< HEAD
       {isLoginPage ? (
         <Suspense fallback={<LoadingScreen />}>
           <Routes>
@@ -180,6 +194,23 @@ function App() {
       <Footer />
 
       {showLoginSuccessLoading && <LoadingScreen />}
+=======
+      <Layout>
+        <Header />
+        <MainContent>
+          <Suspense fallback={<LoadingScreen />}>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/compare" element={<Compare />} />
+              <Route path="/query" element={<Query />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/about-us" element={<AboutUs />} />
+            </Routes>
+          </Suspense>
+        </MainContent>
+      </Layout>
+      <Footer />
+>>>>>>> 1f71e124c8d635ad1e4b6696ccd508bd30dd9b5e
     </>
   );
 }

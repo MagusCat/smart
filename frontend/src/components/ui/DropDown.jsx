@@ -6,6 +6,7 @@ function DropDown({
   value,
   onChange,
   placeholder = "Selecciona...",
+  disabled = false,
   className = "",
 }) {
   const [open, setOpen] = useState(false);
@@ -30,6 +31,7 @@ function DropDown({
         className={`flex items-center justify-between w-full min-w-0 px-4 py-2 bg-white border border-gray-300 rounded-lg shadow transition-all duration-200
           hover:border-blue-400 focus:border-blue-500 outline-none`}
         onClick={() => setOpen((v) => !v)}
+        disabled={disabled}
         style={{ minWidth: 0 }}
       >
         <span
@@ -48,7 +50,7 @@ function DropDown({
       </button>
 
       {open && (
-        <ul className="absolute left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 animate-fade-in flex flex-col w-full min-w-0 max-w-full">
+        <ul className="absolute left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 animate-fade-in flex flex-col w-full min-h-20 min-w-0 max-w-full">
           {options.map((opt) => (
             <li
               key={opt.value}

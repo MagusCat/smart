@@ -15,7 +15,7 @@ function Button({
 }) {
   return (
     <button
-      className={`flex items-center gap-2 px-2 py-2 rounded-lg text-sm shadow transition-all duration-200 focus:outline-none focus:ring-2 ${styleMap[style] || styleMap.default} ${className}`}
+      className={`flex items-center gap-2 px-2 py-2 rounded-lg text-sm shadow transition-all duration-200 focus:outline-none focus:ring-2 disabled:bg-gray-300 ${styleMap[style] || styleMap.default} ${className}`}
       {...props}
     >
       {icon && (

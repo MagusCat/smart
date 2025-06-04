@@ -1,0 +1,140 @@
+@baseUrl = http://localhost:3000/api
+
+GET {{baseUrl}}/olap/test
+
+### Test Group
+POST {{baseUrl}}/olap/query
+Content-Type: application/json
+
+{
+  "table": "HECHO_Inscripcion",
+  "columns": [
+    {
+      "name": "mes",
+      "alias": "mes"
+    },
+    {
+      "name": "anio",
+      "alias": "anio"
+    }
+  ],
+  "dims": [
+    {
+      "name": "DIM_Tiempo",
+      "type": "inner",
+      "identify": "Id_dim_tiempo"
+    }
+  ],
+  "aggregations": [
+    {
+      "fields": [
+        {
+          "name": "mes",
+          "alias": "data"
+        }
+      ],
+      "agg": "COUNT"
+    }
+  ],
+  "order": {
+    "by": [
+      "anio", "mes"
+    ],
+    "type": "DESC"
+  }
+}
+
+### Test Where
+POST {{baseUrl}}/olap/query
+Content-Type: application/json
+
+{
+  "table": "HECHO_Inscripcion",
+  "columns": [
+    {
+      "name": "mes",
+      "alias": "mes"
+    },
+    {
+      "name": "anio",
+      "alias": "anio"
+    }
+  ],
+  "dims": [
+    {
+      "name": "DIM_Tiempo",
+      "type": "inner",
+      "identify": "Id_dim_tiempo"
+    }
+  ],
+  "conditions": [
+    {
+      "fields": ["anio"],
+      "condition": "=",
+      "value": 2023
+    }
+  ],
+  "aggregations": [
+    {
+      "fields": [
+        {
+          "name": "mes",
+          "alias": "data"
+        }
+      ],
+      "agg": "COUNT"
+    }
+  ],
+  "order": {
+    "by": [
+      "anio", "mes"
+    ],
+    "type": "DESC"
+  }
+}
+
+### Test Summary
+
+GET {{baseUrl}}/olap/summary
+
+###
+GET {{baseUrl}}/olap/summary/register/total
+
+###
+GET {{baseUrl}}/olap/summary/growth/monthly?top=5
+
+###
+GET {{baseUrl}}/olap/summary/growth/quarterly?top=5
+
+###
+GET {{baseUrl}}/olap/summary/register/average/monthly
+
+###
+GET {{baseUrl}}/olap/summary/register/average/quarterly
+
+### Test cross
+POST {{baseUrl}}/olap/compare/cross
+Content-Type: application/json
+
+{
+  "rowField": "dim_categoria",
+  "colField": "dim_propietario",
+  "field": "id_hecho_inscripcion",
+  "agg": "COUNT"
+}
+
+### Test compare
+POST {{baseUrl}}/olap/compare/lines
+Content-Type: application/json
+ 
+{
+  "field": "dim_categoria",
+  "agg": "COUNT",
+  "group": ["mes"],
+  "filters": [
+    {
+      "label": "TODOS",
+      "conditions": []
+    }
+  ]
+}

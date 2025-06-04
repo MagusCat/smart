@@ -39,10 +39,17 @@ function Header() {
       to: "/about-us",
     },
   ];
+<<<<<<< HEAD
 
   return (
     <header className="flex items-center justify-between pb-10 w-auto h-auto z-50 mt-4">
       <Logo vertical={false} size="10" />
+=======
+  
+  return (
+    <header className="flex items-center justify-between py-2 pb-10 w-auto h-auto z-50">
+      <Logo vertical={false} size="10" version=''/>
+>>>>>>> 1f71e124c8d635ad1e4b6696ccd508bd30dd9b5e
 
       <section className="flex gap-5 lg:gap-10">
         <NavBar navOptions={options} className="hidden md:flex" />
