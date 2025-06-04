@@ -41,7 +41,7 @@ function Selector({ options = [], value, onChange, className = "" }) {
               ></div>
             </div>
 
-            <span className="flex-1">{opt.label}</span>
+            <span className="flex-1 truncate">{opt.label}</span>
           </li>
         ))}
       </ul>

@@ -1,12 +1,30 @@
 import React from "react";
 import { FaRegCalendarAlt, FaChartLine } from "react-icons/fa";
 
-export function FrecuencyTableStyled({ dataSource }) {
+export function FrecuencyTableStyled({ dataSource, state }) {
   const total = dataSource.reduce((prev, current) => prev + current.total, 0);
+
+  if( !dataSource || dataSource.length === 0) {
+    return (
+      <div className="w-full max-w-2xl mx-auto border rounded-sm overflow-hidden bg-white">
+        <p className="text-center p-4 text-gray-500">
+          No hay datos disponibles
+        </p>
+      </div>
+    );
+  }
+
+  if (state === "loading") {
+    return (
+      <div className="w-full max-w-2xl mx-auto border rounded-sm overflow-hidden bg-white">
+        <p className="text-center p-4 text-gray-500">Cargando...</p>
+      </div>
+    );
+  }
 
   const data = dataSource.map((current) => ({
     var: current.var,
-    cat: current.cat,
+    cat: current.label,
     f: current.total,
     fi: current.total / total,
     fx: (current.total / total) * 100,
@@ -136,7 +154,7 @@ export function CrossTableStyled({ dataSource }) {
   }, {});
 
   return (
-    <div className="w-full max-w-2xl mx-auto border rounded-sm overflow-auto bg-white">
+    <div className="w-full mx-auto border rounded-sm overflow-auto bg-white">
       <table className="min-w-full text-sm">
         <thead>
           <tr>

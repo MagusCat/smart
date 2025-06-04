@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
 
-export default function useFetch(endpoint, body, auto = true) {
+export default function useFetch(endpoint, body = null, auto = true) {
   const [data, setData] = useState([]);
   const [state, setState] = useState("idle");
 
   const fetchData = async () => {
+    if (!endpoint) {
+      setData([]);
+      setState("idle");
+      return;
+    }
+
     try {
       setState("loading");
       const res = await fetch(
@@ -22,6 +28,8 @@ export default function useFetch(endpoint, body, auto = true) {
       setData(json);
       setState("done");
     } catch (err) {
+      console.error("Fetch error:", err);
+
       setData([]);
       setState("error");
     }
@@ -29,7 +37,7 @@ export default function useFetch(endpoint, body, auto = true) {
 
   useEffect(() => {
     if (auto) fetchData();
-  }, [body, auto]);
+  }, [endpoint, body, auto]);
 
-  return { data, state, refetch: fetchData};
+  return { data, state, refetch: fetchData };
 }

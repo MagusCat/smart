@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { FaAngleDown, FaTable, FaChartLine } from "react-icons/fa6";
 import {
   CardMain,
@@ -7,50 +7,84 @@ import {
   CardFooter,
   CardContent,
 } from "../components/ui/Card";
-import {
-  Switcher,
-  Selector,
-  Button,
-  ButtonIcon,
-  ViewSelector,
-} from "@components/ui";
+import { Switcher, Selector, ButtonIcon, ViewSelector } from "@components/ui";
 import { FrecuencyTableStyled, SystemRecordsTable } from "@components/ui/Table";
 import { Chart, ChartPalettes } from "@components/ui/Chart";
+import useFetch from "@hooks/useFetch";
+import { useNavigate } from "react-router";
 
-const chartData = {
-  labels: ["Privado", "Publico", "Oficial", "Escolar"],
-  datasets: [
-    {
-      label: "Ventas",
-      data: [300, 205, 251, 252],
+function getChartData(data) {
+  if (!data || !data.length) return { labels: [], datasets: [] };
+  const labels = data.map((d) => d.label);
+  const values = data.map((d) => d.total);
+  return {
+    labels,
+    datasets: [
+      {
+        label: "Total",
+        data: values,
         backgroundColor: ChartPalettes[1].color1,
         borderColor: ChartPalettes[1].main,
         borderWidth: 2,
-      fill: true,
-      tension: 0.4,
-      pointRadius: 4,
-    },
-  ],
-};
-
-const frecuencyData = [
-  { var: "Servicio", cat: "Privado", total: 300 },
-  { var: "Servicio", cat: "Publico", total: 205 },
-  { var: "Servicio", cat: "Oficial", total: 251 },
-  { var: "Servicio", cat: "Escolar", total: 252 },
-  { var: "Servicio", cat: "Emergencia", total: 245 },
-  { var: "Servicio", cat: "Turistico", total: 125 },
-
-];
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+      },
+    ],
+  };
+}
 
 function Query() {
+  const navigate = useNavigate();
   const [option, setOption] = useState(null);
   const [type, setType] = useState("graph");
   const [menu, setMenu] = useState("general");
   const [showAside, setShowAside] = useState(true);
 
+  const { data: categories, state: catState } = useFetch(
+    "olap/summary/category/dim"
+  );
+  const categoryOptions = useMemo(
+    () =>
+      catState === "done"
+        ? categories.data.map((cat) => ({
+            value: cat.dim,
+            label: cat.label,
+          }))
+        : [],
+    [catState, categories]
+  );
+
+  const { data: frecuencyData, state: freqState } = useFetch(
+    option ? `olap/frecuency/${option}` : null
+  );
+  const frecuencyTableData = useMemo(
+    () =>
+      freqState === "done" && frecuencyData.data ? frecuencyData.data : [],
+    [freqState, frecuencyData]
+  );
+  const chartData = useMemo(
+    () => getChartData(frecuencyTableData),
+    [frecuencyTableData]
+  );
+
+  // Dimensiones de tiempo para tabulados
+  const { data: timeDims, state: timeState } = useFetch(
+    "olap/summary/category/time"
+  );
+  const timeOptions = useMemo(
+    () =>
+      timeState === "done" && timeDims.data
+        ? timeDims.data.map((dim) => ({
+            label: dim.label,
+            value: dim.value,
+          }))
+        : [],
+    [timeState, timeDims]
+  );
+
   return (
-    <div className="flex flex-col md:flex-row w-full h-140 gap-3">
+    <div className="flex flex-col md:flex-row w-full min-h-140 gap-3">
       <aside
         className={`flex flex-col relative ${
           showAside ? "w-full md:w-50" : "w-full md:w-8"
@@ -60,21 +94,15 @@ function Query() {
           {showAside && (
             <>
               <CardHeader className="relative text-sm mt-2">
-                Categorias
+                Categorías
               </CardHeader>
               <CardContent className="flex flex-col">
                 <Selector
                   className="px-3 mb-2 h-full w-full"
-                  options={[
-                    { value: "a", label: "Inscripción" },
-                    { value: "a1", label: "Servicio" },
-                    { value: "a2", label: "Uso" },
-                    { value: "a3", label: "Marca" },
-                    { value: "a4", label: "Tipo Prop." },
-
-                  ]}
+                  options={categoryOptions}
                   value={option}
                   onChange={setOption}
+                  disabled={catState !== "done"}
                 />
               </CardContent>
             </>
@@ -114,9 +142,18 @@ function Query() {
           <section className="relative order-2 md:order-1 min-w-0">
             {menu === "tab" && (
               <SystemRecordsTable
-                data={[
-                  { variable: "inscripcion", period: "2024" }
-                ]}
+                data={
+                  timeState === "done" && timeOptions.length > 0
+                    ? timeOptions.map((dim) => ({
+                        variable: "inscripcion",
+                        period: dim.label,
+                      }))
+                    : []
+                }
+
+                onPeriodClick={(_, period) => {
+                  navigate(`/tabulated${option ? `?variable=${option}` : '?variable'}&year1=${period}&year2=${period}`);
+                }}
               />
             )}
 
@@ -124,16 +161,19 @@ function Query() {
               <>
                 <div
                   className={`block transition-all duration-300 ${
-                    type == "table"
+                    type === "table"
                       ? "opacity-100 translate-y-0"
                       : "opacity-0 -translate-y-1 pointer-events-none min-w-0 h-0 overflow-hidden"
                   } w-full`}
                 >
-                  <FrecuencyTableStyled dataSource={frecuencyData} />
+                  <FrecuencyTableStyled
+                    dataSource={frecuencyTableData}
+                    state={freqState}
+                  />
                 </div>
                 <div
                   className={`block transition-all duration-300 ${
-                    type == "graph"
+                    type === "graph"
                       ? "opacity-100 translate-y-0"
                       : "opacity-0 -translate-y-1 pointer-events-none h-0 overflow-hidden"
                   } w-full`}
@@ -144,10 +184,10 @@ function Query() {
                     options={{
                       responsive: true,
                       maintainAspectRatio: false,
-                      plugins: { legend: { display: false } },
+                      plugins: { legend: { display: false, position: "top" }, datalabels: { display: false } },
                     }}
                     data={chartData}
-                    state="done"
+                    state={freqState}
                   />
                 </div>
               </>

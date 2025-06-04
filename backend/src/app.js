@@ -1,6 +1,8 @@
 import express from "express";
 import testRoutes from "./routes/testRoutes.js";
 import olapRoutes from "./routes/olap/index.js"
+import oltpRoutes from "./routes/oltp/index.js"
+
 
 const app = express();
 
@@ -23,5 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/", testRoutes);
 app.use("/api/olap/", olapRoutes);
+app.use("/api/oltp/", oltpRoutes);
+
 
 export default app;

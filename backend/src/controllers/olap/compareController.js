@@ -1,36 +1,6 @@
 import compareModel from "../../models/olap/compareModel.js";
 
 const compareController = {
-  async getCategories(req, res) {
-    try {
-      const categories = await compareModel.getCategories();
-      res.status(200).json({
-        status: "success",
-        data: categories,
-      });
-    } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message: error.message,
-      });
-    }
-  },
-
-  async getTimes(req, res) {
-    try {
-      const times = await compareModel.getTimes();
-      res.status(200).json({
-        status: "success",
-        data: times,
-      });
-    } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message: error.message,
-      });
-    }
-  },
-
   async compare(req, res) {
     const body = req.body;
 

@@ -23,7 +23,7 @@ function Button({
           <span className="flex items-center">{icon}</span>
         </IconContext.Provider>
       )}
-      {children && <span>{children}</span>}
+      {children && <span className="w-full text-center">{children}</span>}
     </button>
   );
 }

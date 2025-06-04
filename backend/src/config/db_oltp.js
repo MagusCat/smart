@@ -1,4 +1,4 @@
-import mssql from "mssql"
+import sql from "mssql"
 
 const config = {
   user: process.env.DB_OLTP_USER,
@@ -18,7 +18,9 @@ const config = {
 }
 
 function getConnection(){
-    return mssql.connect(config);
+    return sql.connect(config);
 }
+
+export { sql, getConnection };
 
 export default getConnection;
