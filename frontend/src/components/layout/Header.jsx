@@ -36,13 +36,14 @@ function Header() {
     {
       name: "Acerca de",
       icon: <FaBolt />,
-      to: "/about-us"
-    }
+      to: "/about-us",
+    },
   ];
-
+  
+  
   return (
     <header className="flex items-center justify-between py-2 pb-10 w-auto h-auto z-50">
-      <Logo vertical={false} size="10" version='admin'/>
+      <Logo vertical={false} size="10" version=''/>
 
       <section className="flex gap-5 lg:gap-10">
         <NavBar navOptions={options} className="hidden md:flex" />
@@ -62,7 +63,8 @@ function Header() {
           src="https://avatars.githubusercontent.com/u/177873716?v=4"
           menu={[
             { label: "Perfil", onClick: () => alert("Perfil") },
-            { label: "Cerrar sesión", onClick: () => alert("Logout") },
+            { label: "Datos", to: "/admin/propietarios" },
+            { label: "Cerrar sesión", to: "/login" },
           ]}
         />
       </section>

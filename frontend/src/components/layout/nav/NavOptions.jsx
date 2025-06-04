@@ -1,4 +1,6 @@
+import React from 'react';
 import NavItem from "./NavItem.jsx";
+import NavDropdown from '../../ui/NavDropdown.jsx';
 
 function NavOptions({
   className,
@@ -10,14 +12,18 @@ function NavOptions({
 }) {
   const options = navOptions.map((opt) => (
     <li className={classItem || ""} key={opt.name}>
-      <NavItem
-        className={classNav || ""}
-        icon={icons && opt.icon}
-        to={opt.to}
-        onClick={onNavItemClick}
-      >
-        {opt.name}
-      </NavItem>
+      {opt.subMenu ? (
+        <NavDropdown label={opt.name} options={opt.subMenu} />
+      ) : (
+        <NavItem
+          className={classNav || ""}
+          icon={icons && opt.icon}
+          to={opt.to}
+          onClick={onNavItemClick}
+        >
+          {opt.name}
+        </NavItem>
+      )}
     </li>
   ));
 

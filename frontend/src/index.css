@@ -50,3 +50,25 @@ body {
   overflow-y: auto;
   scrollbar-gutter: stable;
 }
+
+/* En index.css o global.css */
+input:-webkit-autofill {
+    box-shadow: 0 0 0px 1000px white inset !important;
+    -webkit-text-fill-color: black !important;
+    caret-color: black;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
