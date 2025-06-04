@@ -11,6 +11,5 @@
   "license": "ISC",
   "packageManager": "pnpm@10.8.1",
   "dependencies": {
-    "chartjs-plugin-datalabels": "^2.2.0"
   }
 }

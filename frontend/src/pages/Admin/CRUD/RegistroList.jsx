@@ -1,32 +1,60 @@
-// frontend/src/pages/Admin/CRUD/RegistroList.jsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { HiDocumentPlus } from "react-icons/hi2";
+
 import { Card } from "../../../components/ui/Card";
 import DataTable from "../../../components/ui/DataTable";
 import Pagination from "../../../components/ui/Pagination";
-import CreateRegisterForm from '../../../components/forms/CreateRegisterForm'; // Se usará para crear y editar
-import ConfirmDeleteModal from '../../../components/ui/ConfirmDeleteModal';
+import CreateRegisterForm from "../../../components/forms/CreateRegisterForm";
+import ConfirmDeleteModal from "../../../components/ui/ConfirmDeleteModal";
 
 const initialRegistroData = [
-  { id: 'REG001', nChasis: 'ABCDE12345FGHIJ67', nMatricula: 'NIC001A', marca: 'Toyota', fechaInscripcion: '2023-01-15' },
-  { id: 'REG002', nChasis: 'KLMNO87654PQRST32', nMatricula: 'NIC002B', marca: 'Honda', fechaInscripcion: '2023-02-20' },
-  { id: 'REG003', nChasis: 'UVWXY98765ZABCD10', nMatricula: 'NIC003C', marca: 'Nissan', fechaInscripcion: '2023-03-01' },
-  { id: 'REG004', nChasis: 'FGHIJ11223KLMNO44', nMatricula: 'NIC004D', marca: 'Mercedes-Benz', fechaInscripcion: '2023-04-10' },
-  { id: 'REG005', nChasis: 'PQRST55667UVWXY88', nMatricula: 'NIC005E', marca: 'BMW', fechaInscripcion: '2023-05-05' },
+  {
+    id: "REG001",
+    nChasis: "ABCDE12345FGHIJ67",
+    nMatricula: "NIC001A",
+    marca: "Toyota",
+    fechaInscripcion: "2023-01-15",
+  },
+  {
+    id: "REG002",
+    nChasis: "KLMNO87654PQRST32",
+    nMatricula: "NIC002B",
+    marca: "Honda",
+    fechaInscripcion: "2023-02-20",
+  },
+  {
+    id: "REG003",
+    nChasis: "UVWXY98765ZABCD10",
+    nMatricula: "NIC003C",
+    marca: "Nissan",
+    fechaInscripcion: "2023-03-01",
+  },
+  {
+    id: "REG004",
+    nChasis: "FGHIJ11223KLMNO44",
+    nMatricula: "NIC004D",
+    marca: "Mercedes-Benz",
+    fechaInscripcion: "2023-04-10",
+  },
+  {
+    id: "REG005",
+    nChasis: "PQRST55667UVWXY88",
+    nMatricula: "NIC005E",
+    marca: "BMW",
+    fechaInscripcion: "2023-05-05",
+  },
 ];
 
 function RegistroList() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [registroData, setRegistroData] = useState(initialRegistroData);
 
-  // Estados para el formulario de creación
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  // NUEVOS Estados para el formulario de edición
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [editingRegister, setEditingRegister] = useState(null); // Almacena el registro que se está editando
+  const [editingRegister, setEditingRegister] = useState(null);
 
-  // Estados para el modal de eliminación
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
@@ -35,63 +63,59 @@ function RegistroList() {
   const handleSearch = () => alert(`Buscando: ${searchTerm}`);
   const handlePageChange = (page) => setCurrentPage(page);
 
-  // Lógica para Crear Registro
   const openCreateForm = () => {
     setIsCreateOpen(true);
-    setEditingRegister(null); // Asegurarse de que no haya un item de edición previo
+    setEditingRegister(null);
   };
   const closeCreateForm = () => setIsCreateOpen(false);
 
-  // Crear nuevo registro (recibe { nChasis, nMatricula, marca, fechaInscripcion } desde el formulario)
   const handleCreateRegister = (newData) => {
-    const newId = `REG${(registroData.length + 1).toString().padStart(3, '0')}`;
+    const newId = `REG${(registroData.length + 1).toString().padStart(3, "0")}`;
     const newItem = {
       id: newId,
       nChasis: newData.nChasis,
       nMatricula: newData.nMatricula,
       marca: newData.marca,
-      fechaInscripcion: newData.fechaInscripcion
+      fechaInscripcion: newData.fechaInscripcion,
     };
-    setRegistroData(prev => [...prev, newItem]);
+    setRegistroData((prev) => [...prev, newItem]);
     closeCreateForm();
   };
 
-  // NUEVA Lógica para Editar Registro
   const openEditForm = (item) => {
-    setEditingRegister(item); // Establece el registro a editar
-    setIsEditOpen(true);      // Abre el formulario de edición
+    setEditingRegister(item);
+    setIsEditOpen(true);
   };
 
   const closeEditForm = () => {
-    setIsEditOpen(false);      // Cierra el formulario de edición
-    setEditingRegister(null);  // Limpia el registro en edición
+    setIsEditOpen(false);
+    setEditingRegister(null);
   };
 
   const handleSaveRegister = (updatedData) => {
-    setRegistroData(prev =>
-      prev.map(reg =>
+    setRegistroData((prev) =>
+      prev.map((reg) =>
         reg.id === editingRegister.id
           ? {
               ...reg,
               nChasis: updatedData.nChasis,
               nMatricula: updatedData.nMatricula,
               marca: updatedData.marca,
-              fechaInscripcion: updatedData.fechaInscripcion
+              fechaInscripcion: updatedData.fechaInscripcion,
             }
           : reg
       )
     );
-    closeEditForm(); // Cierra el formulario después de guardar
+    closeEditForm();
   };
 
-  // Lógica para Eliminar Registro
   const openDeleteModal = (item) => {
     setItemToDelete(item);
     setIsDeleteModalOpen(true);
   };
   const confirmDelete = () => {
     if (!itemToDelete) return;
-    setRegistroData(prev => prev.filter(r => r.id !== itemToDelete.id));
+    setRegistroData((prev) => prev.filter((r) => r.id !== itemToDelete.id));
     setItemToDelete(null);
     setIsDeleteModalOpen(false);
   };
@@ -101,20 +125,20 @@ function RegistroList() {
   };
 
   const columns = [
-    { key: 'id', header: 'Código' },
-    { key: 'nChasis', header: 'Nº Chasis' },
-    { key: 'nMatricula', header: 'Nº Matrícula' },
-    { key: 'marca', header: 'Marca' },
-    { key: 'fechaInscripcion', header: 'Fecha inscripción' },
+    { key: "id", header: "Código" },
+    { key: "nChasis", header: "Nº Chasis" },
+    { key: "nMatricula", header: "Nº Matrícula" },
+    { key: "marca", header: "Marca" },
+    { key: "fechaInscripcion", header: "Fecha inscripción" },
   ];
 
   const actions = [
     {
-      type: 'edit',
-      onClick: (item) => openEditForm(item), // Llama a la nueva función para abrir el formulario de edición
+      type: "edit",
+      onClick: (item) => openEditForm(item),
     },
     {
-      type: 'delete',
+      type: "delete",
       onClick: (item) => openDeleteModal(item),
     },
   ];
@@ -143,46 +167,46 @@ function RegistroList() {
             className="w-[130px] h-10 bg-[#326689] hover:bg-[#2a5573] text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center justify-center space-x-2 shadow-md"
             onClick={openCreateForm}
           >
-            <img src="/img/create.svg" alt="Crear" className="w-5 h-5" />
+            <HiDocumentPlus className="w-5 h-5" />
             <span>Crear</span>
           </button>
         </div>
 
         <DataTable data={registroData} columns={columns} actions={actions} />
-        <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
       </Card>
 
-      {/* Formulario de creación de registro */}
       <CreateRegisterForm
         isOpen={isCreateOpen}
         onClose={closeCreateForm}
-        onCreate={handleCreateRegister} // Ahora espera un objeto con las props correctas de registro
-        initialValues={{}} // Valores iniciales vacíos para crear
-        isEditMode={false} // No es modo edición
+        onCreate={handleCreateRegister}
+        initialValues={{}}
+        isEditMode={false}
       />
 
-      {/* Formulario de edición de registro (reutiliza CreateRegisterForm) */}
       <CreateRegisterForm
-        isOpen={isEditOpen} // Usa el nuevo estado para edición
-        onClose={closeEditForm} // Función para cerrar el formulario de edición
-        onCreate={handleSaveRegister} // Función para guardar cambios en edición
-        initialValues={{ // Pasa los valores del registro a editar
-          nChasis: editingRegister?.nChasis || '',
-          nMatricula: editingRegister?.nMatricula || '',
-          marca: editingRegister?.marca || '',
-          fechaInscripcion: editingRegister?.fechaInscripcion || '',
+        isOpen={isEditOpen}
+        onClose={closeEditForm}
+        onCreate={handleSaveRegister}
+        initialValues={{
+          nChasis: editingRegister?.nChasis || "",
+          nMatricula: editingRegister?.nMatricula || "",
+          marca: editingRegister?.marca || "",
+          fechaInscripcion: editingRegister?.fechaInscripcion || "",
         }}
-        isEditMode={true} // Indica que es modo edición
-        uneditableId={editingRegister?.id} // Pasa el ID para hacerlo no editable
+        isEditMode={true}
+        uneditableId={editingRegister?.id}
       />
 
-       {/* Modal de confirmación de eliminación */}
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
         onCancel={cancelDelete}
         onConfirm={confirmDelete}
         item={itemToDelete}
-        // PASO CLAVE: Sobreescribir la prop 'displayValue' para que muestre el 'id'
         displayValue={itemToDelete?.id}
       />
     </>

@@ -1,4 +1,3 @@
-// frontend/src/components/ui/ButtonIcon.jsx
 import { IconContext } from "react-icons/lib";
 
 function ButtonIcon({ icon, className = "", ...props }) {
@@ -16,7 +15,7 @@ function ButtonIcon({ icon, className = "", ...props }) {
       `}
       {...props}
     >
-        {icon}
+      {icon}
     </button>
   );
 }

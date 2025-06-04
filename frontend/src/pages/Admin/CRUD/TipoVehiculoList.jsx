@@ -1,81 +1,81 @@
-// frontend/src/pages/Admin/CRUD/TipoVehiculoList.jsx
-import React, { useState, useEffect } from 'react'; // Importar useEffect
+import React, { useState, useEffect } from "react";
+import { HiDocumentPlus } from "react-icons/hi2";
+
 import { Card } from "../../../components/ui/Card";
 import DataTable from "../../../components/ui/DataTable";
 import Pagination from "../../../components/ui/Pagination";
-import CreateVehicleTypeForm from '../../../components/forms/CreateVehicleTypeForm'; // Se usará para crear y editar
-import ConfirmDeleteModal from '../../../components/ui/ConfirmDeleteModal'; // Para el modal de eliminación
+import CreateVehicleTypeForm from "../../../components/forms/CreateVehicleTypeForm";
+import ConfirmDeleteModal from "../../../components/ui/ConfirmDeleteModal";
 
-const initialTipoVehiculoData = [ // Renombrado para consistencia
-  { id: 'TV001', tipo: 'Automóvil' },
-  { id: 'TV002', tipo: 'Camioneta' },
-  { id: 'TV003', tipo: 'Motocicleta' },
-  { id: 'TV004', tipo: 'Camión' },
-  { id: 'TV005', tipo: 'Autobús' },
+const initialTipoVehiculoData = [
+  { id: "TV001", tipo: "Automóvil" },
+  { id: "TV002", tipo: "Camioneta" },
+  { id: "TV003", tipo: "Motocicleta" },
+  { id: "TV004", tipo: "Camión" },
+  { id: "TV005", tipo: "Autobús" },
 ];
 
 function TipoVehiculoList() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [tipoVehiculoData, setTipoVehiculoData] = useState(initialTipoVehiculoData); // Estado para los datos mutables
+  const [tipoVehiculoData, setTipoVehiculoData] = useState(
+    initialTipoVehiculoData
+  );
 
-  // Estados para el formulario de creación
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  // NUEVOS Estados para el formulario de edición
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [editingVehicleType, setEditingVehicleType] = useState(null); // Almacena el tipo de vehículo a editar
+  const [editingVehicleType, setEditingVehicleType] = useState(null);
 
-  // Estados para el modal de eliminación
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
-  const totalPages = 5; // Ajusta según el número de páginas reales
+  const totalPages = 5;
 
   const handleSearch = () => alert(`Buscando: ${searchTerm}`);
   const handlePageChange = (page) => setCurrentPage(page);
 
-  // Lógica para Crear Tipo de Vehículo
   const handleCreateClick = () => {
     setIsCreateOpen(true);
-    setEditingVehicleType(null); // Asegurarse de que no haya un item de edición previo
+    setEditingVehicleType(null);
   };
   const handleCreateClose = () => setIsCreateOpen(false);
 
   const handleCreateVehicleType = (newVehicleType) => {
-    // Generar un nuevo ID basado en la longitud actual
-    const newId = `TV${(tipoVehiculoData.length + 1).toString().padStart(3, '0')}`;
+    const newId = `TV${(tipoVehiculoData.length + 1)
+      .toString()
+      .padStart(3, "0")}`;
     const newItem = { id: newId, tipo: newVehicleType };
-    setTipoVehiculoData(prev => [...prev, newItem]);
-    handleCreateClose(); // Cerrar el formulario después de crear
+    setTipoVehiculoData((prev) => [...prev, newItem]);
+    handleCreateClose();
   };
 
-  // NUEVA Lógica para Editar Tipo de Vehículo
   const handleEditClick = (item) => {
-    setEditingVehicleType(item); // Establece el tipo de vehículo a editar
-    setIsEditOpen(true);          // Abre el formulario de edición
+    setEditingVehicleType(item);
+    setIsEditOpen(true);
   };
 
   const handleEditClose = () => {
-    setIsEditOpen(false);         // Cierra el formulario de edición
-    setEditingVehicleType(null);  // Limpia el tipo de vehículo en edición
+    setIsEditOpen(false);
+    setEditingVehicleType(null);
   };
 
   const handleSaveVehicleType = (updatedVehicleType) => {
-    setTipoVehiculoData(prevTypes =>
-      prevTypes.map(type =>
+    setTipoVehiculoData((prevTypes) =>
+      prevTypes.map((type) =>
         type.id === editingVehicleType.id
           ? { ...type, tipo: updatedVehicleType }
           : type
       )
     );
-    handleEditClose(); // Cierra el formulario después de guardar
+    handleEditClose();
   };
 
-  // Lógica para Eliminar Tipo de Vehículo
   const handleDeleteConfirm = () => {
     if (!itemToDelete) return;
-    setTipoVehiculoData(prevTypes => prevTypes.filter(t => t.id !== itemToDelete.id));
+    setTipoVehiculoData((prevTypes) =>
+      prevTypes.filter((t) => t.id !== itemToDelete.id)
+    );
     setItemToDelete(null);
     setIsDeleteOpen(false);
   };
@@ -86,17 +86,17 @@ function TipoVehiculoList() {
   };
 
   const columns = [
-    { key: 'id', header: 'Código' },
-    { key: 'tipo', header: 'Tipo de Vehículo' },
+    { key: "id", header: "Código" },
+    { key: "tipo", header: "Tipo de Vehículo" },
   ];
 
   const actions = [
     {
-      type: 'edit',
-      onClick: (item) => handleEditClick(item), // Llama a la nueva función de edición
+      type: "edit",
+      onClick: (item) => handleEditClick(item),
     },
     {
-      type: 'delete',
+      type: "delete",
       onClick: (item) => {
         setItemToDelete(item);
         setIsDeleteOpen(true);
@@ -106,7 +106,9 @@ function TipoVehiculoList() {
 
   return (
     <>
-      <h1 className="text-3xl font-bold text-gray-800 mb-6 mt-4">Tipos de Vehículo</h1> {/* Título pluralizado */}
+      <h1 className="text-3xl font-bold text-gray-800 mb-6 mt-4">
+        Tipos de Vehículo
+      </h1>
       <Card className="p-6 rounded-xl shadow-lg border border-gray-200 bg-white">
         <div className="flex items-center space-x-4 mb-6">
           <div className="flex-grow flex border border-gray-300 rounded-md overflow-hidden shadow-sm">
@@ -128,31 +130,37 @@ function TipoVehiculoList() {
             className="w-[130px] h-10 bg-[#326689] hover:bg-[#2a5573] text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center justify-center space-x-2 shadow-md"
             onClick={handleCreateClick}
           >
-            <img src="/img/create.svg" alt="Crear" className="w-5 h-5" />
+            <HiDocumentPlus className="w-5 h-5" />
             <span>Crear</span>
           </button>
         </div>
-        <DataTable data={tipoVehiculoData} columns={columns} actions={actions} />
-        <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
+        <DataTable
+          data={tipoVehiculoData}
+          columns={columns}
+          actions={actions}
+        />
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
       </Card>
 
-      {/* Formulario de Creación de Tipo de Vehículo */}
       <CreateVehicleTypeForm
         isOpen={isCreateOpen}
         onClose={handleCreateClose}
         onCreate={handleCreateVehicleType}
-        initialValue="" // Valor inicial vacío para creación
-        isEditMode={false} // No es modo edición
+        initialValue=""
+        isEditMode={false}
       />
 
-      {/* Formulario de Edición de Tipo de Vehículo (reutiliza CreateVehicleTypeForm) */}
       <CreateVehicleTypeForm
-        isOpen={isEditOpen} // Usa el nuevo estado para edición
-        onClose={handleEditClose} // Función para cerrar el formulario de edición
-        onCreate={handleSaveVehicleType} // Función para guardar cambios en edición
-        initialValue={editingVehicleType?.tipo || ''} // Pasa el valor del tipo de vehículo a editar
-        isEditMode={true} // Indica que es modo edición
-        uneditableId={editingVehicleType?.id} // Pasa el ID para hacerlo no editable
+        isOpen={isEditOpen}
+        onClose={handleEditClose}
+        onCreate={handleSaveVehicleType}
+        initialValue={editingVehicleType?.tipo || ""}
+        isEditMode={true}
+        uneditableId={editingVehicleType?.id}
       />
 
       <ConfirmDeleteModal
@@ -160,7 +168,6 @@ function TipoVehiculoList() {
         onConfirm={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
         item={itemToDelete}
-        // Mostrar el tipo de vehículo en el modal de confirmación
         displayValue={itemToDelete?.tipo}
       />
     </>

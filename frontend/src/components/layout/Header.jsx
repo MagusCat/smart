@@ -36,14 +36,12 @@ function Header() {
     {
       name: "Acerca de",
       icon: <FaBolt />,
-      to: "/about-us"
-    }
+      to: "/about-us",
+    },
   ];
 
-  // frontend/src/components/layout/Header.jsx
-// ...
-return (
-  <header className="flex items-center justify-between py-2 pb-10 w-auto h-auto z-50 mt-4"> 
+  return (
+    <header className="flex items-center justify-between pb-10 w-auto h-auto z-50 mt-4">
       <Logo vertical={false} size="10" />
 
       <section className="flex gap-5 lg:gap-10">
@@ -65,7 +63,7 @@ return (
           menu={[
             { label: "Perfil", onClick: () => alert("Perfil") },
             { label: "Datos", to: "/admin/propietarios" },
-            { label: "Cerrar sesión", onClick: () => alert("Logout") },
+            { label: "Cerrar sesión", to: "/login" },
           ]}
         />
       </section>

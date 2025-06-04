@@ -1,21 +1,12 @@
-// frontend/src/pages/Login.jsx (Mantén este tal cual la versión anterior)
+import React, { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-import React, { useState } from 'react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
-// Ya no necesitamos useNavigate aquí para el login exitoso, App.jsx lo manejará
-// import { useNavigate } from 'react-router-dom';
-// Ya no necesitamos importar LoadingScreen aquí para el post-login, App.jsx lo manejará
-// import LoadingScreen from '../components/ui/LoadingScreen';
-
-// Recibe onLoginSuccess como prop
-function Login({ onLoginSuccess }) { // <--- Asegúrate de recibir onLoginSuccess
+function Login({ onLoginSuccess }) {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  // const navigate = useNavigate(); // Ya no se necesita aquí para la redirección post-login
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -24,28 +15,29 @@ function Login({ onLoginSuccess }) { // <--- Asegúrate de recibir onLoginSucces
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    setErrorMessage('');
+    setErrorMessage("");
 
     if (!email || !password) {
-      setErrorMessage('Por favor, ingresa tu usuario y contraseña.');
+      setErrorMessage("Por favor, ingresa tu usuario y contraseña.");
       return;
     }
 
-    setIsLoading(true); // Activa el spinner del botón
+    setIsLoading(true);
 
     setTimeout(() => {
-      if (email === 'admin' && password === 'smartdrive') {
-        setIsLoading(false); // Desactiva el spinner del botón
+      if (email === "admin" && password === "smartdrive") {
+        setIsLoading(false);
 
-        // Llamamos a la función pasada por App.jsx
         if (onLoginSuccess) {
-          onLoginSuccess(); // <--- Aquí se activa la LoadingScreen y la navegación
+          onLoginSuccess();
         }
       } else {
-        setErrorMessage('Usuario o contraseña incorrectos. Inténtalo de nuevo.');
+        setErrorMessage(
+          "Usuario o contraseña incorrectos. Inténtalo de nuevo."
+        );
         setIsLoading(false);
       }
-    }, 1500); // Simula el tiempo de respuesta del servidor
+    }, 1500);
   };
 
   return (
@@ -92,16 +84,16 @@ function Login({ onLoginSuccess }) { // <--- Asegúrate de recibir onLoginSucces
               <input
                 type="email"
                 placeholder="Usuario"
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgba(52,228,175,0.18)] focus:border-transparent transition-all duration-200 text-black"
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#13263D] focus:border-transparent transition-all duration-200 text-black"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
 
               <div className="relative w-full">
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   placeholder="Contraseña"
-                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgba(52,228,175,0.18)] focus:border-transparent transition-all duration-200 text-black pr-10"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#13263D] focus:border-transparent transition-all duration-200 text-black pr-10"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -132,25 +124,17 @@ function Login({ onLoginSuccess }) { // <--- Asegúrate de recibir onLoginSucces
                   flex items-center justify-center gap-4
                   transition-all duration-100 ease-out
 
-                  /* Colores y sombras base */
-                  bg-[#2D435D]
+                  bg-[#13263D]
                   border-2 border-[#1e2a3c]
-                  shadow-[0_8px_0_#1e2a3c] /* Sombra 3D inicial (grosor) */
 
                   /* Efecto Hover */
                   hover:brightness-110
-                  hover:drop-shadow-[0_10px_15px_rgba(45,67,93,0.4)]
-
-                  /* Efecto Active (cuando se hace clic) */
-                  active:translate-y-2
-                  active:shadow-inner active:shadow-md /* CLAVE: Sombra interior con un tamaño visible */
-                  active:brightness-100
-                  active:drop-shadow-none /* Quita la sombra externa al presionar */
 
                   /* Estado de carga */
-                  ${isLoading
-                    ? 'cursor-not-allowed bg-gray-500 border-gray-600 shadow-none translate-y-2 drop-shadow-none'
-                    : ''
+                  ${
+                    isLoading
+                      ? "cursor-not-allowed bg-gray-500 border-gray-600 shadow-none translate-y-2 drop-shadow-none"
+                      : ""
                   }
                 `}
                 disabled={isLoading}
@@ -165,7 +149,6 @@ function Login({ onLoginSuccess }) { // <--- Asegúrate de recibir onLoginSucces
           </div>
         </section>
       </section>
-      {/* Ya NO renderizamos LoadingScreen aquí */}
     </main>
   );
 }

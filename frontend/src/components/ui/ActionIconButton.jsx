@@ -1,27 +1,26 @@
-// frontend/src/components/ui/ActionIconButton.jsx
-import React from 'react';
+import React from "react";
 
 const ActionIconButton = ({ type, onClick }) => {
-  let bgColorClass = '';
-  let iconSrc = '';
-  let altText = '';
-  let buttonSizeClass = 'w-10 h-8'; // w-40 h-30 (pixels) -> w-10 h-8 (tailwind units, 1 unit = 4px)
+  let bgColorClass = "";
+  let iconSrc = "";
+  let altText = "";
+  let buttonSizeClass = "w-10 h-8";
 
   switch (type) {
-    case 'edit':
-      bgColorClass = 'bg-[#1CBDAB] hover:bg-[#159e87]'; // Color de fondo y hover
-      iconSrc = '/img/edit.svg'; // Ruta al SVG
-      altText = 'Editar';
+    case "edit":
+      bgColorClass = "bg-[#1CBDAB] hover:bg-[#159e87]";
+      iconSrc = "/img/edit.svg";
+      altText = "Editar";
       break;
-    case 'delete':
-      bgColorClass = 'bg-[#FF746C] hover:bg-[#d65f57]'; // Color de fondo y hover
-      iconSrc = '/img/delete.svg'; // Ruta al SVG
-      altText = 'Eliminar';
+    case "delete":
+      bgColorClass = "bg-[#FF746C] hover:bg-[#d65f57]";
+      iconSrc = "/img/delete.svg";
+      altText = "Eliminar";
       break;
     default:
-      bgColorClass = 'bg-gray-500 hover:bg-gray-600';
-      iconSrc = '';
-      altText = '';
+      bgColorClass = "bg-gray-500 hover:bg-gray-600";
+      iconSrc = "";
+      altText = "";
   }
 
   return (
@@ -30,7 +29,7 @@ const ActionIconButton = ({ type, onClick }) => {
       onClick={onClick}
       title={altText}
     >
-      {iconSrc && <img src={iconSrc} alt={altText} className="w-4 h-4" />} {/* Tamaño del icono dentro del botón */}
+      {iconSrc && <img src={iconSrc} alt={altText} className="w-4 h-4" />}
     </button>
   );
 };

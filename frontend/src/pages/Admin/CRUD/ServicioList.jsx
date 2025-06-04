@@ -1,32 +1,30 @@
-// frontend/src/pages/Admin/CRUD/ServicioList.jsx
-import React, { useState, useEffect } from 'react'; // Importar useEffect
+import React, { useState, useEffect } from "react";
+import { HiDocumentPlus } from "react-icons/hi2";
+
 import { Card } from "../../../components/ui/Card";
 import DataTable from "../../../components/ui/DataTable";
 import Pagination from "../../../components/ui/Pagination";
-import CreateServiceTypeForm from '../../../components/forms/CreateServiceTypeForm'; // Componente para crear/editar
-import ConfirmDeleteModal from '../../../components/ui/ConfirmDeleteModal'; // Componente para confirmar eliminación
+import CreateServiceTypeForm from "../../../components/forms/CreateServiceTypeForm";
+import ConfirmDeleteModal from "../../../components/ui/ConfirmDeleteModal";
 
 const initialServicioData = [
-  { id: 'S001', tipo: 'Mantenimiento Preventivo' },
-  { id: 'S002', tipo: 'Reparación de Motor' },
-  { id: 'S003', tipo: 'Cambio de Aceite' },
-  { id: 'S004', tipo: 'Alineación y Balanceo' },
-  { id: 'S005', tipo: 'Inspección General' },
+  { id: "S001", tipo: "Mantenimiento Preventivo" },
+  { id: "S002", tipo: "Reparación de Motor" },
+  { id: "S003", tipo: "Cambio de Aceite" },
+  { id: "S004", tipo: "Alineación y Balanceo" },
+  { id: "S005", tipo: "Inspección General" },
 ];
 
 function ServicioList() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [servicioData, setServicioData] = useState(initialServicioData); // Estado para los datos mutables
+  const [servicioData, setServicioData] = useState(initialServicioData);
 
-  // Estados para el formulario de creación
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  // NUEVOS Estados para el formulario de edición
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [editingService, setEditingService] = useState(null); // Almacena el servicio que se está editando
+  const [editingService, setEditingService] = useState(null);
 
-  // Estados para el modal de eliminación
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
@@ -35,47 +33,45 @@ function ServicioList() {
   const handleSearch = () => alert(`Buscando: ${searchTerm}`);
   const handlePageChange = (page) => setCurrentPage(page);
 
-  // Lógica para Crear Tipo de Servicio
   const handleCreateClick = () => {
     setIsCreateOpen(true);
-    setEditingService(null); // Asegurarse de que no haya un item de edición previo
+    setEditingService(null);
   };
   const handleCreateClose = () => setIsCreateOpen(false);
 
   const handleCreateService = (newServiceType) => {
-    // Generar un nuevo ID basado en la longitud actual, puedes ajustar la lógica
-    const newId = `S${(servicioData.length + 1).toString().padStart(3, '0')}`;
+    const newId = `S${(servicioData.length + 1).toString().padStart(3, "0")}`;
     const newItem = { id: newId, tipo: newServiceType };
-    setServicioData(prev => [...prev, newItem]);
-    handleCreateClose(); // Cerrar el formulario después de crear
+    setServicioData((prev) => [...prev, newItem]);
+    handleCreateClose();
   };
 
-  // NUEVA Lógica para Editar Tipo de Servicio
   const handleEditClick = (item) => {
-    setEditingService(item); // Establece el servicio a editar
-    setIsEditOpen(true);     // Abre el formulario de edición
+    setEditingService(item);
+    setIsEditOpen(true);
   };
 
   const handleEditClose = () => {
-    setIsEditOpen(false);    // Cierra el formulario de edición
-    setEditingService(null); // Limpia el servicio en edición
+    setIsEditOpen(false);
+    setEditingService(null);
   };
 
   const handleSaveService = (updatedServiceType) => {
-    setServicioData(prevServices =>
-      prevServices.map(service =>
+    setServicioData((prevServices) =>
+      prevServices.map((service) =>
         service.id === editingService.id
           ? { ...service, tipo: updatedServiceType }
           : service
       )
     );
-    handleEditClose(); // Cierra el formulario después de guardar
+    handleEditClose();
   };
 
-  // Lógica para Eliminar Tipo de Servicio
   const handleDeleteConfirm = () => {
     if (!itemToDelete) return;
-    setServicioData(prevServices => prevServices.filter(s => s.id !== itemToDelete.id));
+    setServicioData((prevServices) =>
+      prevServices.filter((s) => s.id !== itemToDelete.id)
+    );
     setItemToDelete(null);
     setIsDeleteOpen(false);
   };
@@ -86,17 +82,17 @@ function ServicioList() {
   };
 
   const columns = [
-    { key: 'id', header: 'Código' },
-    { key: 'tipo', header: 'Tipo de Servicio' },
+    { key: "id", header: "Código" },
+    { key: "tipo", header: "Tipo de Servicio" },
   ];
 
   const actions = [
     {
-      type: 'edit',
-      onClick: (item) => handleEditClick(item), // Llama a la nueva función de edición
+      type: "edit",
+      onClick: (item) => handleEditClick(item),
     },
     {
-      type: 'delete',
+      type: "delete",
       onClick: (item) => {
         setItemToDelete(item);
         setIsDeleteOpen(true);
@@ -106,7 +102,9 @@ function ServicioList() {
 
   return (
     <>
-      <h1 className="text-3xl font-bold text-gray-800 mb-6 mt-4">Tipos de Servicios</h1> {/* Título pluralizado */}
+      <h1 className="text-3xl font-bold text-gray-800 mb-6 mt-4">
+        Tipos de Servicios
+      </h1>
       <Card className="p-6 rounded-xl shadow-lg border border-gray-200 bg-white">
         <div className="flex items-center space-x-4 mb-6">
           <div className="flex-grow flex border border-gray-300 rounded-md overflow-hidden shadow-sm">
@@ -128,31 +126,33 @@ function ServicioList() {
             className="w-[130px] h-10 bg-[#326689] hover:bg-[#2a5573] text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center justify-center space-x-2 shadow-md"
             onClick={handleCreateClick}
           >
-            <img src="/img/create.svg" alt="Crear" className="w-5 h-5" />
+            <HiDocumentPlus className="w-5 h-5" />
             <span>Crear</span>
           </button>
         </div>
         <DataTable data={servicioData} columns={columns} actions={actions} />
-        <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
       </Card>
 
-      {/* Formulario de Creación de Tipo de Servicio */}
       <CreateServiceTypeForm
         isOpen={isCreateOpen}
         onClose={handleCreateClose}
         onCreate={handleCreateService}
-        initialValue="" // Valor inicial vacío para creación
-        isEditMode={false} // No es modo edición
+        initialValue=""
+        isEditMode={false}
       />
 
-      {/* Formulario de Edición de Tipo de Servicio (reutiliza CreateServiceTypeForm) */}
       <CreateServiceTypeForm
-        isOpen={isEditOpen} // Usa el nuevo estado para edición
-        onClose={handleEditClose} // Función para cerrar el formulario de edición
-        onCreate={handleSaveService} // Función para guardar cambios en edición
-        initialValue={editingService?.tipo || ''} // Pasa el valor del tipo de servicio a editar
-        isEditMode={true} // Indica que es modo edición
-        uneditableId={editingService?.id} // Pasa el ID para hacerlo no editable
+        isOpen={isEditOpen}
+        onClose={handleEditClose}
+        onCreate={handleSaveService}
+        initialValue={editingService?.tipo || ""}
+        isEditMode={true}
+        uneditableId={editingService?.id}
       />
 
       <ConfirmDeleteModal
@@ -160,7 +160,6 @@ function ServicioList() {
         onConfirm={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
         item={itemToDelete}
-        // Mostrar el tipo de servicio en el modal de confirmación
         displayValue={itemToDelete?.tipo}
       />
     </>

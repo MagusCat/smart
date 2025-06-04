@@ -1,26 +1,17 @@
-// frontend/src/components/layout/HeaderAdmin.jsx
-
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; 
 
-// Componentes locales
-import NavBarAdmin from "./nav/NavBarAdmin.jsx"; // NavBar para opciones de Admin
-import NavAside from "./nav/NavAside.jsx"; // NavAside para el menú lateral
+import NavBarAdmin from "./nav/NavBarAdmin.jsx"; 
+import NavAside from "./nav/NavAside.jsx"; 
 
-// Componentes de UI
 import Logo from "../ui/Logo.jsx";
 import Avatar from "../ui/Avatar.jsx";
-import ButtonIcon from "../ui/ButtonIcon.jsx"; // Asegúrate de que esta importación exista
-
-// Íconos
+import ButtonIcon from "../ui/ButtonIcon.jsx"; 
 import {
   FaUser,
   FaClipboardList,
   FaUsers,
   FaFolder,
-  FaAngleLeft, // Para el botón de NavAside
-  // Si en el Figma de admin hay íconos diferentes para Dashboard/Comparación/Consultas/AcercaDe,
-  // asegúrate de importarlos aquí o donde se definan las opciones.
+  FaAngleLeft, 
 } from "react-icons/fa6"; 
 
 function HeaderAdmin() {
@@ -45,15 +36,11 @@ function HeaderAdmin() {
   ];
 
   return (
-    // ¡Aplica las mismas clases al <header> principal como en tu Header.jsx!
-    // Si tu Header.jsx tiene 'mt-8', mantenlo aquí también para la consistencia.
-    <header className="flex items-center justify-between py-2 pb-10 w-auto h-auto z-50 mt-4"> 
+    <header className="flex items-center justify-between pb-10 w-auto h-auto z-50 mt-4"> 
       <Logo vertical={false} size="10" />
 
-      {/* Aplica las mismas clases a la sección de navegación como en tu Header.jsx! */}
-      <section className="flex gap-5 lg:gap-10">
-        {/* NavBarAdmin usará el mismo NavBar general, pero con opciones de admin */}
-        {/* Asegúrate que NavBarAdmin.jsx pase las clases correctas a NavOptions para el estilo de los botones */}
+      <section className="flex gap-15 lg:gap-10">
+        
         <NavBarAdmin navOptions={adminOptions} className="hidden md:flex" />
 
         <ButtonIcon
@@ -72,9 +59,9 @@ function HeaderAdmin() {
         <Avatar
           src="https://avatars.githubusercontent.com/u/177873716?v=4"
           menu={[
-            { label: "Dashboard", to: "/" }, // Para que el Dashboard funcione correctamente
+            { label: "Dashboard", to: "/" },
             { label: "Perfil", onClick: () => alert("Perfil") },
-            { label: "Cerrar sesión", onClick: () => alert("Logout") },
+            { label: "Cerrar sesión", to: "/login" },
           ]}
         />
       </section>

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { HiDocumentPlus } from 'react-icons/hi2';
+
 import { Card } from "../../../components/ui/Card";
 import DataTable from "../../../components/ui/DataTable";
 import Pagination from "../../../components/ui/Pagination";
@@ -28,10 +30,12 @@ function PropietarioList() {
     const handleSearch = () => alert(`Buscando: ${searchTerm}`);
     const handlePageChange = (page) => setCurrentPage(page);
 
-    const handleOpenCreateForm = () => setIsCreateFormOpen(true);
+    const handleOpenCreateForm = () => {
+        setIsCreateFormOpen(true);
+        setEditingOwner(null);
+    };
     const handleCloseCreateForm = () => setIsCreateFormOpen(false);
 
-    // Crear Propietario
     const handleCreateOwner = (newOwnerData) => {
         const newId = `P00${owners.length + 1}`;
         setOwners(prevOwners => [
@@ -46,7 +50,6 @@ function PropietarioList() {
         handleCloseCreateForm();
     };
 
-    // Editar Propietario
     const handleEditClick = (item) => {
         setEditingOwner(item);
         setIsEditFormOpen(true);
@@ -73,7 +76,6 @@ function PropietarioList() {
         handleCloseEditForm();
     };
 
-    // Eliminar Propietario
     const handleDeleteClick = (item) => {
         setOwnerToDelete(item);
         setIsDeleteModalOpen(true);
@@ -107,15 +109,15 @@ function PropietarioList() {
             <Card className="p-6 rounded-xl shadow-lg border border-gray-200 bg-white">
                 <div className="flex items-center space-x-4 mb-6">
                     <div className="flex-grow flex border border-gray-300 rounded-md overflow-hidden shadow-sm">
-                        <input 
-                            type="text" 
-                            placeholder="Buscar" 
-                            className="flex-grow p-2 focus:outline-none focus:ring-0 text-black" 
-                            value={searchTerm} 
-                            onChange={(e) => setSearchTerm(e.target.value)} 
+                        <input
+                            type="text"
+                            placeholder="Buscar"
+                            className="flex-grow p-2 focus:outline-none focus:ring-0 text-black"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                        <button 
-                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 transition duration-200 ease-in-out border-l border-gray-300" 
+                        <button
+                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 transition duration-200 ease-in-out border-l border-gray-300"
                             onClick={handleSearch}
                         >
                             Buscar
@@ -125,14 +127,13 @@ function PropietarioList() {
                         className="w-[130px] h-10 bg-[#326689] hover:bg-[#2a5573] text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center justify-center space-x-2 shadow-md"
                         onClick={handleOpenCreateForm}
                     >
-                        <img src="/img/create.svg" alt="Crear" className="w-5 h-5" /><span>Crear</span>
+                        <HiDocumentPlus className="w-5 h-5" /><span>Crear</span> {/* Icono actualizado */}
                     </button>
                 </div>
                 <DataTable data={owners} columns={columns} actions={actions} />
                 <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
             </Card>
 
-            {/* Formulario de Creación */}
             <CreateOwnerForm
                 isOpen={isCreateFormOpen}
                 onClose={handleCloseCreateForm}
@@ -140,7 +141,6 @@ function PropietarioList() {
                 initialValues={{}}
             />
 
-            {/* Formulario de Edición (reutiliza CreateOwnerForm) */}
             <CreateOwnerForm
                 isOpen={isEditFormOpen}
                 onClose={handleCloseEditForm}
@@ -152,12 +152,12 @@ function PropietarioList() {
                 }}
             />
 
-            {/* Modal de Eliminación */}
             <ConfirmDeleteModal
                 isOpen={isDeleteModalOpen}
                 onConfirm={handleConfirmDelete}
                 onCancel={handleCancelDelete}
                 item={ownerToDelete}
+                displayValue={ownerToDelete?.nombre}
             />
         </>
     );
