@@ -13,9 +13,6 @@
   "license": "ISC",
   "packageManager": "pnpm@10.8.1",
   "dependencies": {
-<<<<<<< HEAD
-=======
     "dotenv": "^16.5.0"
->>>>>>> 1f71e124c8d635ad1e4b6696ccd508bd30dd9b5e
   }
 }
