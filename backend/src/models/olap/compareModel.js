@@ -1,59 +1,7 @@
 import getConnection from "../../config/db_olap.js";
-
-const allow_dims = {
-  dim_marca: { id: "id_dim_marca", label: "Marca", field: "marca" },
-  dim_categoria: {
-    id: "id_dim_categoria",
-    label: "Categoría",
-    field: "categoria",
-  },
-  dim_propietario: {
-    id: "id_dim_propietario",
-    label: "Propietario",
-    field: "propietario",
-  },
-  dim_tipo_combustible: {
-    id: "id_dim_tipo_combustible",
-    label: "Tipo de Combustible",
-    field: "combustible",
-  },
-  dim_tipo_uso: { id: "id_dim_tipo_uso", label: "Tipo de Uso", field: "uso" },
-  dim_tipo_servicio: {
-    id: "id_dim_tipo_servicio",
-    label: "Tipo de Servicio",
-    field: "servicio",
-  },
-  dim_tipo_vehiculo: {
-    id: "id_dim_tipo_vehiculo",
-    label: "Tipo de Vehículo",
-    field: "vehiculo",
-  },
-};
+import allow_dims from "../../config/allows_dims.js";
 
 const compareModel = {
-  async getCategories() {
-    return Object.entries(allow_dims).map(([dim, { id, label }]) => ({
-      dim,
-      label,
-    }));
-  },
-
-  async getTimes() {
-    const pool = await getConnection();
-    const result = await pool
-      .request()
-      .query("SELECT anio FROM dim_tiempo GROUP BY anio ORDER BY anio DESC");
-
-    if (result.recordset.length === 0) {
-      throw new Error("No time data found");
-    }
-
-    return result.recordset.map((row) => ({
-      id: row.anio,
-      label: row.anio.toString(),
-    }));
-  },
-
   async compare(query) {
     const { field, agg = "COUNT", filters = [], group = [] } = query;
     const pool = await getConnection();
@@ -75,22 +23,28 @@ const compareModel = {
     };
 
     const buildQuery = (field, where, group) => {
-      const selectGroupKeys = group
-        .map((gField) => `${gField} as label`)
-        .join(", ");
-      const groupByClause = group.join(", ");
-      const orderByClause = group.map((gField) => `${gField} ASC`).join(", ");
+      let selectGroupKeys =
+        group.length > 0
+          ? group.map((gField) => `${gField} as label`).join(", ")
+          : null;
+      let groupByClause = group.length > 0 ? group.join(", ") : null;
+      let orderByClause =
+        group.length > 0
+          ? group.map((gField) => `${gField} ASC`).join(", ")
+          : null;
 
       return `
       SELECT
-        ${selectGroupKeys},
+        ${selectGroupKeys ? selectGroupKeys + "," : ""}
         ${agg}(${allow_dims[field].field}) as value
       FROM hecho_inscripcion
       INNER JOIN dim_tiempo ON hecho_inscripcion.id_dim_tiempo = dim_tiempo.id_dim_tiempo
-      INNER JOIN ${field} as dim ON hecho_inscripcion.${allow_dims[field].id} = dim.${allow_dims[field].id}
+      INNER JOIN ${field} as dim ON hecho_inscripcion.${
+        allow_dims[field].id
+      } = dim.${allow_dims[field].id}
       ${where}
-      GROUP BY ${groupByClause}
-      ORDER BY ${orderByClause}
+      ${groupByClause ? `GROUP BY ${groupByClause}` : ""}
+      ${orderByClause ? `ORDER BY ${orderByClause}` : ""}
     `;
     };
 
@@ -106,10 +60,6 @@ const compareModel = {
 
       const currentQuery = buildQuery(field, where, group);
 
-      console.log(`Executing query for filter set ${index}:`, currentQuery);
-
-      console.log("Parameters:", params); 
-      
       const result = await req.query(currentQuery);
 
       results[filterSet.label || `series_${index}`] = result.recordset;

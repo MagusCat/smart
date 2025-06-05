@@ -1,4 +1,5 @@
 import getConnection from "../../config/db_olap.js";
+import  allow_dims  from "../../config/allows_dims.js";
 
 const SQL_GROWTH_MONTHLY = `
 WITH per_month AS (
@@ -74,73 +75,107 @@ SELECT
   AVG(CAST(t AS FLOAT)) AS p
 FROM total_mounth;`;
 
-
 const summaryModel = {
-    async getGrowthMounthly(top = 12) {
-        const result = await getConnection()
-            .then(pool => {
-                return pool.request().query(SQL_GROWTH_MONTHLY);
-            })
-            .catch(err => { throw err });
+  async getGrowthMounthly(top = 12) {
+    const result = await getConnection()
+      .then((pool) => {
+        return pool.request().query(SQL_GROWTH_MONTHLY);
+      })
+      .catch((err) => {
+        throw err;
+      });
 
-        return result.recordset.slice(0, top);
-    },
+    return result.recordset.slice(0, top);
+  },
 
-    async getGrowthQuarterly(top = 12) {
-        const result = await getConnection()
-            .then(pool => {
-                return pool.request().query(SQL_GROWTH_QUARTERLY);
-            })
-            .catch(err => { throw err });
+  async getGrowthQuarterly(top = 12) {
+    const result = await getConnection()
+      .then((pool) => {
+        return pool.request().query(SQL_GROWTH_QUARTERLY);
+      })
+      .catch((err) => {
+        throw err;
+      });
 
-        return result.recordset.slice(0, top);
-    },
+    return result.recordset.slice(0, top);
+  },
 
-    async getAverageMonthly(){
-        const result = await getConnection()
-            .then(pool => {
-                return pool.request().query(SQL_AVERAGE_MONTHLY);
-            })
-            .catch(err => { throw err });
+  async getAverageMonthly() {
+    const result = await getConnection()
+      .then((pool) => {
+        return pool.request().query(SQL_AVERAGE_MONTHLY);
+      })
+      .catch((err) => {
+        throw err;
+      });
 
-        return result.recordset[0].p;
-    },
+    return result.recordset[0].p;
+  },
 
-    async getAverageQuarterly(){
-        const result = await getConnection()
-            .then(pool => {
-                return pool.request().query(SQL_AVERAGE_QUARTERLY);
-            })
-            .catch(err => { throw err });
+  async getAverageQuarterly() {
+    const result = await getConnection()
+      .then((pool) => {
+        return pool.request().query(SQL_AVERAGE_QUARTERLY);
+      })
+      .catch((err) => {
+        throw err;
+      });
 
-        return result.recordset[0].p;
-    },
+    return result.recordset[0].p;
+  },
 
-    async getSummary() {
-        const growthMonthly = await this.getGrowthMounthly(1);
-        const growthQuarterly = await this.getGrowthQuarterly(1);
-        const averageMonthly = await this.getAverageMonthly();
-        const averageQuarterly = await this.getAverageQuarterly();
-        const total = await this.getTotal();
+  async getSummary() {
+    const growthMonthly = await this.getGrowthMounthly(1);
+    const growthQuarterly = await this.getGrowthQuarterly(1);
+    const averageMonthly = await this.getAverageMonthly();
+    const averageQuarterly = await this.getAverageQuarterly();
+    const total = await this.getTotal();
 
-        return {
-            grow_m: growthMonthly,
-            grow_q: growthQuarterly,
-            avg_m: averageMonthly,
-            avg_q: averageQuarterly,
-            total: total
-        };
-    },
+    return {
+      grow_m: growthMonthly,
+      grow_q: growthQuarterly,
+      avg_m: averageMonthly,
+      avg_q: averageQuarterly,
+      total: total,
+    };
+  },
 
-    async getTotal() {
-        const result = await getConnection()
-            .then(pool => {
-                return pool.request().query("SELECT COUNT(*) AS total FROM HECHO_INSCRIPCION");
-            })
-            .catch(err => { throw err });
+  async getTotal() {
+    const result = await getConnection()
+      .then((pool) => {
+        return pool
+          .request()
+          .query("SELECT COUNT(*) AS total FROM HECHO_INSCRIPCION");
+      })
+      .catch((err) => {
+        throw err;
+      });
 
-        return result.recordset[0].total;
+    return result.recordset[0].total;
+  },
+
+  async getCategories() {
+    return Object.entries(allow_dims).map(([dim, { id, label }]) => ({
+      dim,
+      label,
+    }));
+  },
+
+  async getTimes() {
+    const pool = await getConnection();
+    const result = await pool
+      .request()
+      .query("SELECT anio FROM dim_tiempo GROUP BY anio ORDER BY anio DESC");
+
+    if (result.recordset.length === 0) {
+      throw new Error("No time data found");
     }
-}
+
+    return result.recordset.map((row) => ({
+      id: row.anio,
+      label: row.anio.toString(),
+    }));
+  },
+};
 
 export default summaryModel;

@@ -69,6 +69,36 @@ const summaryController = {
         .json({ error: "Error al obtener el resumen", details: err });
     }
   },
+
+    async getCategories(req, res) {
+    try {
+      const categories = await summaryModel.getCategories();
+      res.status(200).json({
+        status: "success",
+        data: categories,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "error",
+        message: error.message,
+      });
+    }
+  },
+
+  async getTimes(req, res) {
+    try {
+      const times = await summaryModel.getTimes();
+      res.status(200).json({
+        status: "success",
+        data: times,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "error",
+        message: error.message,
+      });
+    }
+  },
 };
 
 export default summaryController;
