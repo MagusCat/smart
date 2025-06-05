@@ -8,71 +8,6 @@ import { ModalDownload } from "@components/ui/Modal";
 import useFetch from "@hooks/useFetch";
 import useParser from "@hooks/useParser";
 
-const months = [
-  { label: "Enero", value: 1 },
-  { label: "Febrero", value: 2 },
-  { label: "Marzo", value: 3 },
-  { label: "Abril", value: 4 },
-  { label: "Mayo", value: 5 },
-  { label: "Junio", value: 6 },
-  { label: "Julio", value: 7 },
-  { label: "Agosto", value: 8 },
-  { label: "Septiembre", value: 9 },
-  { label: "Octubre", value: 10 },
-  { label: "Noviembre", value: 11 },
-  { label: "Diciembre", value: 12 },
-  { label: "Todos", value: null },
-];
-
-const getValue = (raw, value) => (raw ? raw.map((e) => e[value]) : []);
-
-const labelsMonth = [
-  "Ene",
-  "Feb",
-  "Mar",
-  "Abr",
-  "May",
-  "Jun",
-  "Jul",
-  "Ago",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dic",
-];
-
-function getLabel(y, m) {
-  if (!y && !m) return `Todo el tiempo`
-  if (!y && m) return `${labelsMonth[m]}`;
-  if (y && !m) return `${y}`;
-  if (!y && m) return `Mes ${labelsMonth[m]}`;
-  return `${y} - Mes ${labelsMonth[m]}`;
-}
-
-function getBodyCompare(var1, y1, m1, y2, m2) {
-  return {
-    field: var1,
-    agg: "Count",
-    group: m1 || m2 ? ["dia"] : y1 || y2 ? ["mes"] : ["anio"],
-    filters: [
-      {
-        label: getLabel(y1, m1),
-        conditions: [
-          y1 && { field: "anio", condition: "=", value: y1 },
-          m1 && { field: "mes", condition: "=", value: m1 },
-        ].filter(Boolean),
-      },
-      {
-        label: getLabel(y2, m2),
-        conditions: [
-          y2 && { field: "anio", condition: "=", value: y2 },
-          m2 && { field: "mes", condition: "=", value: m2 },
-        ].filter(Boolean),
-      },
-    ],
-  };
-}
-
 function getBodyCross(var1, var2, year) {
   return {
     colField: var1,
@@ -97,6 +32,22 @@ function getFormatTime(times) {
   }));
 }
 
+function getCrossGraphData(crossData) {
+  const keys = Object.keys(crossData[0]).filter((k) => k !== "rowField");
+
+  return {
+    labels: keys,
+    datasets: crossData.map((row, index) => ({
+      label: row.rowField,
+      data: keys.map((key) => row[key]),
+      backgroundColor: ChartPalettes[index % ChartPalettes.length].color1,
+      borderColor: ChartPalettes[index % ChartPalettes.length].main,
+      fill: true,
+      borderWidth: 1 
+    })),
+  };
+}
+
 function Compare() {
   const [type, setType] = useState("table");
   const [formTable, setFormTable] = useState({
@@ -104,14 +55,6 @@ function Compare() {
     v2: "",
     t: null,
   });
-  const [formGraph, setFormGraph] = useState({
-    v1: "",
-    t1_y: null,
-    t1_m: null,
-    t2_y: null,
-    t2_m: null,
-  });
-
   const [Modal, setModal] = useState({
     open: false,
     loading: false,
@@ -119,9 +62,9 @@ function Compare() {
     fileName: "datos.csv",
   });
   const { data: categories, state: catState } = useFetch(
-    "olap/compare/categories"
+    "olap/summary/category/dim"
   );
-  const { data: times, state: timeState } = useFetch("olap/compare/times");
+  const { data: times, state: timeState } = useFetch("olap/summary/category/time");
 
   const categorias = useMemo(
     () => (catState === "done" ? getFormatCategory(categories) : []),
@@ -134,22 +77,9 @@ function Compare() {
         : [],
     [timeState, times]
   );
-
   const crossBody = useMemo(
     () => getBodyCross(formTable.v1, formTable.v2, formTable.t),
     [formTable]
-  );
-
-  const graphBody = useMemo(
-    () =>
-      getBodyCompare(
-        formGraph.v1,
-        formGraph.t1_y,
-        formGraph.t1_m,
-        formGraph.t2_y,
-        formGraph.t2_m
-      ),
-    [formGraph]
   );
 
   const { unparseCSV } = useParser();
@@ -169,33 +99,16 @@ function Compare() {
     },
     false
   );
-
-  const {
-    data: graphRaw,
-    state: graphState,
-    refetch: graphFetch,
-  } = useFetch(
-    "olap/compare/lines",
-    {
-      body: JSON.stringify(graphBody),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-    },
-    false
+  const graphData = useMemo(
+    () =>
+      crossState === "done" && crossData.data
+        ? getCrossGraphData(crossData.data)
+        : null,
+    [crossState, crossData]
   );
 
   function handleCrossFetch() {
     crossFetch();
-  }
-
-  function handleGraphFetch() {
-    if (formGraph.t1_m != null && formGraph.t2_m == null) {
-      return;
-    }
-
-    graphFetch();
   }
 
   async function handleExportCross() {
@@ -216,24 +129,6 @@ function Compare() {
     });
   }
 
-    async function handleExportGraph() {
-    if (graphState !== "done" || !graphRaw.data) return;
-
-    setModal({ ...Modal, open: true, loading: true });
-
-    const csv = await unparseCSV(graphRaw.data);
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-
-    setModal({
-      ...Modal,
-      loading: false,
-      open: true,
-      fileUrl: url,
-      fileName: `line_${formGraph.v1}.csv`,
-    });
-  }
-
   function handleCloseModal() {
     setModal({ ...Modal, open: false });
 
@@ -244,26 +139,6 @@ function Compare() {
       }, 150);
     }
   }
-
-  function getGraphData() {
-    const keys = Object.keys(graphRaw.data);
-
-    return {
-      labels:
-        (formGraph.t1_m || formGraph.t2_m) || (!formGraph.t1_y || !formGraph.t2_y)
-          ? getValue(graphRaw.data[keys[0]], "label")
-          : labelsMonth,
-      datasets: keys.map((key, index) => ({
-        label: key,
-        data: getValue(graphRaw.data[key], "value"),
-        borderColor: ChartPalettes[index].main,
-        tension: 0.4,
-        pointRadius: 3,
-      })),
-    };
-  }
-
-  const graphData = graphState === "done" ? getGraphData() : {};
 
   return (
     <CardMain className="flex flex-col w-full min-h-140 gap-3">
@@ -277,93 +152,33 @@ function Compare() {
       />
 
       <Card className="flex flex-col md:flex-row justify-between lg:justify-normal items-center gap-3 p-3 border-1 border-gray-300 rounded-lg">
-        {type === "table" ? (
-          <>
-            <div className="flex flex-col md:flex-row flex-wrap w-full gap-3 justify-center">
-              <DropDown
-                options={categorias}
-                value={formTable.v1}
-                onChange={(value) => setFormTable({ ...formTable, v1: value })}
-                placeholder="Variable 1"
-                className="min-w-0 flex-1"
-                disabled={catState !== "done"}
-              />
-              <DropDown
-                options={categorias}
-                value={formTable.v2}
-                onChange={(value) => setFormTable({ ...formTable, v2: value })}
-                placeholder="Variable 2"
-                className="min-w-0 flex-1"
-                disabled={catState !== "done"}
-              />
-            </div>
-            <div className="flex flex-1/2 flex-col md:flex-row flex-wrap w-full gap-3 justify-end">
-              <DropDown
-                options={tiempos}
-                value={formTable.t}
-                onChange={(value) => setFormTable({ ...formTable, t: value })}
-                placeholder="Tiempo"
-                className="min-w-0 flex-1"
-              />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="flex flex-1/2 flex-col md:flex-row flex-wrap w-full gap-3 justify-center">
-              <DropDown
-                options={categorias}
-                value={formGraph.v1}
-                onChange={(value) => setFormGraph({ ...formGraph, v1: value })}
-                placeholder="Variable"
-                className="min-w-0 flex-1"
-                disabled={catState !== "done"}
-              />
-            </div>
-            <div className="flex flex-col md:flex-row flex-wrap w-full gap-3 justify-end">
-              <DropDown
-                options={months}
-                value={formGraph.t1_m}
-                onChange={(value) =>
-                  setFormGraph({ ...formGraph, t1_m: value })
-                }
-                placeholder="Meses"
-                className="min-w-0 flex-2"
-                disabled={timeState !== "done"}
-              />
-              <DropDown
-                options={tiempos}
-                value={formGraph.t1_y}
-                onChange={(value) =>
-                  setFormGraph({ ...formGraph, t1_y: value })
-                }
-                placeholder="Año"
-                className="min-w-0 flex-2"
-                disabled={timeState !== "done"}
-              />
-
-              <DropDown
-                options={months}
-                value={formGraph.t2_m}
-                onChange={(value) =>
-                  setFormGraph({ ...formGraph, t2_m: value })
-                }
-                placeholder="Meses"
-                className="min-w-0 flex-2"
-                disabled={timeState !== "done"}
-              />
-              <DropDown
-                options={tiempos}
-                value={formGraph.t2_y}
-                onChange={(value) =>
-                  setFormGraph({ ...formGraph, t2_y: value })
-                }
-                placeholder="Año"
-                className="min-w-0 flex-2"
-                disabled={timeState !== "done"}
-              />
-            </div>
-          </>
-        )}
+        <div className="flex flex-col md:flex-row flex-wrap w-full gap-3 justify-center">
+          <DropDown
+            options={categorias}
+            value={formTable.v1}
+            onChange={(value) => setFormTable({ ...formTable, v1: value })}
+            placeholder="Variable 1"
+            className="min-w-0 flex-1"
+            disabled={catState !== "done"}
+          />
+          <DropDown
+            options={categorias}
+            value={formTable.v2}
+            onChange={(value) => setFormTable({ ...formTable, v2: value })}
+            placeholder="Variable 2"
+            className="min-w-0 flex-1"
+            disabled={catState !== "done"}
+          />
+        </div>
+        <div className="flex flex-1/2 flex-col md:flex-row flex-wrap w-full gap-3 justify-end">
+          <DropDown
+            options={tiempos}
+            value={formTable.t}
+            onChange={(value) => setFormTable({ ...formTable, t: value })}
+            placeholder="Tiempo"
+            className="min-w-0 flex-1"
+          />
+        </div>
       </Card>
 
       <div className="flex flex-col md:flex-row relative min-h-[220px]">
@@ -388,7 +203,7 @@ function Compare() {
           >
             <Chart
               className="w-full h-[220px] min-w-0"
-              type="line"
+              type="bar"
               options={{
                 responsive: true,
                 maintainAspectRatio: false,
@@ -398,7 +213,7 @@ function Compare() {
                 },
               }}
               data={graphData}
-              state={graphState}
+              state={crossState}
             />
           </div>
         </section>
@@ -408,8 +223,8 @@ function Compare() {
             style="primary"
             className="w-full items-center justify-center"
             icon={<FaBolt />}
-            disabled={ type === "table" ? !crossData.data || crossState !== "done" : !graphRaw.data || graphState !== "done" }
-            onClick={ type === "table" ? handleExportCross : handleExportGraph }
+            disabled={!crossData.data || crossState !== "done"}
+            onClick={handleExportCross}
           >
             Exportar
           </Button>
@@ -417,10 +232,8 @@ function Compare() {
             style="primary"
             className="w-full items-center justify-center"
             icon={<FaBookMedical />}
-            disabled={
-              type === "table" ? !formTable.v1 || !formTable.v2 : !formGraph.v1
-            }
-            onClick={type === "table" ? handleCrossFetch : handleGraphFetch}
+            disabled={!formTable.v1 || !formTable.v2}
+            onClick={handleCrossFetch}
           >
             Consultar
           </Button>

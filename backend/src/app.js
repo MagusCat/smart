@@ -2,6 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { sql, poolOLTP, poolOLAP } from './database/db.js';
+import express from "express";
+import testRoutes from "./routes/testRoutes.js";
+import olapRoutes from "./routes/olap/index.js"
+import oltpRoutes from "./routes/oltp/index.js"
 
 // Importar todos tus archivos de ruta
 import categoriasRoutes from './routes/categorias.js';
@@ -64,6 +68,11 @@ const iniciarServidor = async () => {
 };
 
 iniciarServidor();
+
+app.use("/api/", testRoutes);
+app.use("/api/olap/", olapRoutes);
+app.use("/api/oltp/", oltpRoutes);
+
 
 // Esta línea debe estar al final del archivo y 'app' debe haber sido definida arriba.
 export default app;
