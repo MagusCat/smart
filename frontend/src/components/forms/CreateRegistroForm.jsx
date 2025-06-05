@@ -3,7 +3,6 @@ import Input from "./ui/input";
 import DropDown from "./ui/DropDown";
 import BaseForm from "./BaseForm";
 import useFetch from "@hooks/useFetch";
-import axios from "axios";
 
 const CreateRegistroForm = ({
   isOpen,
@@ -16,16 +15,16 @@ const CreateRegistroForm = ({
   const [form, setForm] = useState({});
   const [step, setStep] = useState(1);
 
-  const { data: marcas } = useFetch("oltp/marcas");
-  const { data: categorias } = useFetch("oltp/categorias");
-  const { data: servicios } = useFetch("oltp/servicios");
-  const { data: usos } = useFetch("oltp/usos");
-  const { data: combustibles } = useFetch("oltp/combustibles");
-  const { data: vehiculos } = useFetch("oltp/vehiculos");
+  const { data: marcas } = useFetch("oltp/marcas/get");
+  const { data: categorias } = useFetch("oltp/categorias/get");
+  const { data: servicios } = useFetch("oltp/servicios/get");
+  const { data: usos } = useFetch("oltp/tipo-usos/get");
+  const { data: combustibles } = useFetch("oltp/tipo-combustibles/get");
+  const { data: vehiculos } = useFetch("oltp/tipo-vehiculos/get");
 
   const optionsMarcas = useMemo(() => marcas?.data?.map((m) => ({
-    value: m.id,
-    label: m.nombre
+    value: m.id_marca,
+    label: m.marca
   })) || [], [marcas]);
 
   const optionsCategorias = useMemo(() => categorias?.data?.map((c) => ({
@@ -62,12 +61,7 @@ const CreateRegistroForm = ({
 
   useEffect(() => {
     const loadRegistro = async () => {
-      try {
-        const { data } = await axios.get(`oltp/registro/${initialValues.id}`);
-        setForm(data);
-      } catch (err) {
-        console.error("Error al cargar el registro:", err);
-      }
+
     };
 
     if (isOpen) {

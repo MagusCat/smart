@@ -3,16 +3,13 @@ import express from "express";
 
 const router = express.Router();
 
-// GET todos los tipos de propietario con paginación
 router.get("/get", async (req, res) => {
   try {
     const pool = await getConnection();
-
-    // Obtener datos paginados
     const result = await pool.request().query(`
-        SELECT id_tipo_propietario, propietario
-        FROM Tipo_Propietario
-        ORDER BY propietario
+        SELECT id_tipo_combustible, combustible
+        FROM Tipo_Combustible
+        ORDER BY combustible
       `);
 
     res.json({
@@ -20,10 +17,10 @@ router.get("/get", async (req, res) => {
       data: result.recordset,
     });
   } catch (error) {
-    console.error("Error al obtener el tipo de propietario:", error);
+    console.error("Error al obtener la marca:", error);
     res.status(500).json({
       success: false,
-      error: "Error al obtener el tipo de propietario",
+      error: "Error al obtener la marca",
       details: error.message,
     });
   }
