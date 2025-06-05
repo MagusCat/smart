@@ -5,7 +5,7 @@ import Pagination from "../../components/ui/Pagination";
 import SearchBar from "../../components/ui/SearchBar";
 import Button from "../../components/ui/Button";
 import { FaPlus } from "react-icons/fa";
-import CreatePropietarioForm from "@forms/CreatePropietarioForm";
+import CreateRegistroForm from "@forms/CreateRegistroForm";
 import { ModalQuestion } from "../../components/ui/Modal";
 import useFetch from "@hooks/useFetch";
 import useFetchCallback from "@hooks/useFetchCallback";
@@ -27,7 +27,7 @@ function PropietarioList() {
   });
 
   const { data: propietarioData, refetch } = useFetch(
-    `oltp/propietarios?page=${currentPage}${
+    `oltp/vehiculos?page=${currentPage}${
       searchTerm ? `&search=${searchTerm}` : ""
     }`,
     null,
@@ -132,10 +132,12 @@ function PropietarioList() {
     );
 
   const columns = [
-    { key: "id_propietario", header: "Código" },
-    { key: "cedula", header: "Cédula" },
-    { key: "ruc", header: "Ruc" },
-    { key: "propietario", header: "Tipo" },
+    { key: "id_vehiculo", header: "Código" },
+    { key: "num_motor", header: "Num Motor" },
+    { key: "num_chasis", header: "Num Chasis" },
+    { key: "modelo", header: "Modelo" },
+    { key: "marca", header: "Marca" },
+    { key: "vehiculo", header: "Vehiculo" },
   ];
 
   const actions = [
@@ -176,8 +178,7 @@ function PropietarioList() {
           onPageChange={setCurrentPage}
         />
       </CardMain>
-
-      <CreatePropietarioForm
+      <CreateRegistroForm
         isOpen={createForm.isOpen}
         message={createForm?.message}
         stateOperation={createForm.state}
@@ -185,14 +186,15 @@ function PropietarioList() {
         onCreate={handleCreate}
         initialValues={createForm?.init}
       />
-
+      {/*
       <ModalQuestion
         open={deleteModal.isOpen}
         onClose={() => handleCloseDelete()}
         message={deleteModal.message}
         onYes={() => handleDelete()}
         onNo={() => handleCloseDelete()}
-      />
+      />{" "}
+      */}
     </>
   );
 }

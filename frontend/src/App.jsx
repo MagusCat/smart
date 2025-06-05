@@ -16,6 +16,8 @@ const Query = lazy(() => import("./pages/Query"));
 const Login = lazy(() => import("./pages/Login"));
 const Tabulated = lazy(() => import("./pages/Tabulated"));
 const Propietario = lazy(() => import("./pages/admin/PropietarioList"));
+const Registro = lazy(() => import("./pages/admin/RegistroList"));
+
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
                 <Route path="/about-us" element={<AboutUs />} />
                 <Route path="/tabulated" element={<Tabulated />} />
                 <Route path="/admin/propietarios" element={<Propietario />} />
+                <Route path="/admin/registros" element={<Registro />} />
+
 
                 <Route path="/*" element={redirect("ohno")} />
                 <Route path="/ohno" element={<OhNo />} />

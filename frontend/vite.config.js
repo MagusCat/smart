@@ -8,7 +8,8 @@ export default defineConfig({
     alias: {
       "@components": "/src/components",
       "@pages": "/src/pages",
-      "@hooks": "/src/hooks"
+      "@hooks": "/src/hooks",
+      "@forms": "/src/components/forms",
     }
   },
   plugins: [tailwindcss(), react()],

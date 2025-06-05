@@ -120,8 +120,8 @@ function getSummaryCompareBody(variable, year1, month1, year2, month2) {
         { label: getLabel(year2, month2), conditions: conds2 },
       ],
     }),
-    headers: { "Content-Type": "application/json" },
-    method: "POST",
+    head
+    meters: { "Content-Type": "application/json" },hod: "POST",
   };
 }
 
